@@ -12,6 +12,7 @@ module.exports = {
     },
     approve: {
       type: Sequelize.BOOLEAN,
+      defaultValue: false,
       allowNull: true,
     },
     start_date: {

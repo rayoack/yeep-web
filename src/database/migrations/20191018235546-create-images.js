@@ -22,6 +22,13 @@ module.exports = {
       onDelete: 'CASCADE',
       allowNull: true,
     },
+    event_id: {
+      type: Sequelize.INTEGER,
+      references: { model: 'events', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+      allowNull: true,
+    },
     created_at: {
       type: Sequelize.DATE,
       allowNull: false,
