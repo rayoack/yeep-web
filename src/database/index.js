@@ -4,10 +4,13 @@ import mongoose from 'mongoose';
 import databaseConfig from '../config/database';
 
 import User from '../app/models/User';
-import File from '../app/models/File';
-import Appointment from '../app/models/Appointment';
+import Image from '../app/models/Image';
+import Reserve from '../app/models/Reserve';
+import Event from '../app/models/Event';
+import Space from '../app/models/Space';
+import UsersEvents from '../app/models/UsersEvents';
 
-const models = [User, File, Appointment];
+const models = [User, Image, Reserve, Event, Space, UsersEvents];
 
 class Database {
   constructor() {

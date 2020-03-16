@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Spaces', {
+    return queryInterface.createTable('spaces', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -52,13 +52,21 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      services: {
+        type: Sequelize.JSON,
+        allowNull: true,
+      },
       restrictions: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      opening_hours: {
+      open_hour: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
+      },
+      close_hour: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       owner_id: {
         type: Sequelize.INTEGER,

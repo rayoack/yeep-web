@@ -6,7 +6,7 @@ module.exports = {
     password: process.env.DB_PASS_DEV,
     database: process.env.DB_NAME_DEV,
     host: process.env.DB_HOST_DEV,
-    dialect: 'mysql',
+    dialect: 'postgres',
     define: {
       timestamps: true,
       underscored: true,
@@ -18,7 +18,7 @@ module.exports = {
     password: process.env.DB_PASS_PROD,
     database: process.env.DB_NAME_PROD,
     host: process.env.DB_HOST_PROD,
-    dialect: 'mysql',
+    dialect: 'postgres',
     define: {
       timestamps: true,
       underscored: true,

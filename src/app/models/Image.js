@@ -4,7 +4,8 @@ class File extends Model {
   static init(sequelize) {
     super.init({
       name: Sequelize.STRING,
-      path: Sequelize.STRING,
+      space_id: Sequelize.INTEGER,
+      event_id: Sequelize.INTEGER,
       url: {
         type: Sequelize.VIRTUAL,
         get() {
@@ -16,6 +17,11 @@ class File extends Model {
     });
 
     return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.Space, { foreignKey: 'space_id' });
+    this.belongsTo(models.Event, { foreignKey: 'event_id' });
   }
 }
 

@@ -17,19 +17,19 @@ module.exports = {
     },
     start_date: {
       type: Sequelize.DATE,
-      allowNull: true,
+      allowNull: false,
     },
     end_date: {
       type: Sequelize.DATE,
-      allowNull: true,
+      allowNull: false,
     },
     start_hour: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     end_hour: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     space_id: {
       type: Sequelize.INTEGER,

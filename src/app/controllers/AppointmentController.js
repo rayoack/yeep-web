@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
-import Appointment from '../models/Appointment';
+import Appointment from '../models/Reserve';
 import User from '../models/User';
 import File from '../models/File';
 import Notification from '../schemas/Notification';

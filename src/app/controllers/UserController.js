@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 import User from '../models/User';
-import File from '../models/File';
+import Image from '../models/Image';
 
 class UserController {
   async store(req, res) {
@@ -12,6 +12,12 @@ class UserController {
       name: Yup.string().required(),
       email: Yup.string().email().required(),
       password: Yup.string().required().min(6),
+      role: Yup.boolean().required(),
+      adress: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string(),
+      country: Yup.string(),
+      avatar_id: Yup.integer(),
     });
 
     try {
@@ -32,10 +38,27 @@ class UserController {
     /**
      * Create a new user.
      */
-    const { id, name, email, provider } = await User.create(req.body);
+    const {
+      id,
+      name,
+      email,
+      role,
+      adress,
+      city,
+      state,
+      country,
+      avatar_id, } = await User.create(req.body);
 
     return res.status(201).json({
-      id, name, email, provider,
+      id,
+      name,
+      email,
+      role,
+      adress,
+      city,
+      state,
+      country,
+      avatar_id,
     });
   }
 
@@ -88,9 +111,9 @@ class UserController {
     const { id, name, avatar } = await User.findByPk(req.userId, {
       include: [
         {
-          model: File,
+          model: Image,
           as: 'avatar',
-          attributes: ['id', 'path', 'url'],
+          attributes: ['id', 'name', 'url'],
         },
       ],
     });

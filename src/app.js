@@ -37,7 +37,7 @@ class App {
   }
 
   exceptionHandler() {
-    // Middlewate with four params it is a middleware for handle exceptions.
+    // Middleware with four params it is a middleware for handle exceptions.
     this.server.use(async (err, req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON();
