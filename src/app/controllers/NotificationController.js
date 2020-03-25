@@ -4,16 +4,6 @@ import User from '../models/User';
 
 class NotificationController {
   async index(req, res) {
-    /**
-     * Check if provider_id is a provider.
-     */
-    const checkIsProvider = await User.findOne({
-      where: { id: req.userId, provider: true },
-    });
-
-    if (!checkIsProvider) {
-      return res.status(422).json({ error: 'Only providers can load notifications.' });
-    }
 
     const notifications = await Notification.find({
       user: req.userId,

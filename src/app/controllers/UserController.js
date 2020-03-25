@@ -69,6 +69,11 @@ class UserController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
+      adress: Yup.string(),
+      city: Yup.string(),
+      state: Yup.string(),
+      country: Yup.string(),
+      avatar_id: Yup.integer(),
       oldPassword: Yup.string().min(6),
       password: Yup.string().min(6)
         .when('oldPassword', (oldPassword, field) => (oldPassword ? field.required() : field)),
@@ -85,7 +90,14 @@ class UserController {
     /**
      * Checks if the user has changed their email address to an existing one.
      */
-    const { email, oldPassword } = req.body;
+    const {
+      email,
+      oldPassword,
+      adress,
+      city,
+      state,
+      country,
+    } = req.body;
     const user = await User.findByPk(req.userId);
 
     if (email !== user.email) {
@@ -119,7 +131,14 @@ class UserController {
     });
 
     return res.json({
-      id, name, email, avatar,
+      id,
+      name,
+      email,
+      avatar,
+      adress,
+      city,
+      state,
+      country,
     });
   }
 }

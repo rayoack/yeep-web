@@ -1,13 +1,13 @@
-import File from '../models/File';
+import Image from '../models/Image';
 
-class FileController {
+class ImageController {
   async store(req, res) {
     const { originalname: name, filename: path } = req.file;
 
-    const file = await File.create({ name, path });
+    const image = await Image.create({ name, path });
 
-    return res.json(file);
+    return res.json(image);
   }
 }
 
-export default new FileController();
+export default new ImageController();

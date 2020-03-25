@@ -1,5 +1,7 @@
 import User from '../models/User';
-import File from '../models/File';
+import Image from '../models/Image';
+
+// Controller para o prestador de serviços
 
 class ProviderController {
   async index(req, res) {
@@ -7,7 +9,7 @@ class ProviderController {
       where: { provider: true },
       attributes: ['id', 'name', 'email', 'avatar_id'],
       include: [{
-        model: File,
+        model: Image,
         as: 'avatar',
         attributes: ['name', 'path', 'url'],
       }],
