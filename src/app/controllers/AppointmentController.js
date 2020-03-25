@@ -4,7 +4,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import Appointment from '../models/Reserve';
 import User from '../models/User';
-import File from '../models/File';
+import Image from '../models/Image';
 import Notification from '../schemas/Notification';
 
 import Queue from '../../lib/Queue';
@@ -26,7 +26,7 @@ class AppointmentController {
           as: 'provider',
           attributes: ['id', 'name'],
           include: {
-            model: File,
+            model: Image,
             as: 'avatar',
             attributes: ['id', 'path', 'url'],
           },

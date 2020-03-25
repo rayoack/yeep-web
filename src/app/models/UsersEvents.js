@@ -1,28 +1,34 @@
 'use strict';
 import Sequelize, { Model } from 'sequelize';
 
-module.exports = (sequelize, DataTypes) => {
-  const UsersEvents = sequelize.define('UsersEvents', {
-    user_id: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'User',
-        key: 'id',
+class UsersEvents extends Model {
+  static init(sequelize) {
+    super.init({
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'User',
+          key: 'id',
+        },
       },
-    },
-    event_id: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'User',
-        key: 'id',
+      event_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'User',
+          key: 'id',
+        },
       },
-    },
-  }, {});
-  UsersEvents.associate = function(models) {
+    }, {
+      sequelize,
+    });
+    return this;
+  }
+
+  static associate(models) {
     // associations can be defined here
     models.User.belongsToMany(models.Event, { through: 'UsersEvents' });
     models.Event.belongsToMany(models.User, { through: 'UsersEvents' });
-  };
+  }
+}
 
-  return UsersEvents;
-};
+export default UsersEvents;
