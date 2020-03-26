@@ -1,7 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 import { isBefore, subHours } from 'date-fns';
 
-class Appointment extends Model {
+class Reserve extends Model {
   static init(sequelize) {
     super.init({
       approve: Sequelize.BOOLEAN,
@@ -38,4 +38,4 @@ class Appointment extends Model {
   }
 }
 
-export default Appointment;
+export default Reserve;

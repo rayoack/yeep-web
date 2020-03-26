@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class File extends Model {
+class Image extends Model {
   static init(sequelize) {
     super.init({
       name: Sequelize.STRING,
@@ -25,4 +25,4 @@ class File extends Model {
   }
 }
 
-export default File;
+export default Image;

@@ -13,7 +13,6 @@ class User extends Model {
       city: Sequelize.STRING,
       state: Sequelize.STRING,
       country: Sequelize.STRING,
-      avatar_id: Sequelize.INTEGER,
     }, {
       sequelize,
     });
@@ -28,8 +27,9 @@ class User extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Image, { foreignKey: 'avatar_id', as: 'avatar' });
     this.hasMany(models.Space, { foreignKey: 'owner_id' });
+    this.belongsTo(models.Image, { foreignKey: 'avatar_id', as: 'avatar' });
+    this.belongsToMany(models.Event, { through: 'UsersEvents' });
   }
 
   checkPassword(password) {
