@@ -17,6 +17,19 @@ class SpaceController {
     return res.json(spaces)
   }
 
+  async show(req, res) {
+    const space = await Space.findByPk(req.params.id, {
+      include: [
+        {
+          model: Image,
+          attributes: ['id', 'name', 'url'],
+        },
+      ],
+    })
+
+    return res.json(space)
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),

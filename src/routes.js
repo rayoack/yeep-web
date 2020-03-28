@@ -43,6 +43,7 @@ routes.post('/images/:id/spaces', upload.array('file'), FileController.spaceImag
 routes.post('/images/:id/events', upload.array('file'), FileController.eventsImages);
 
 routes.get('/spaces', SpaceController.index);
+routes.get('/spaces/:id', SpaceController.show);
 routes.post('/spaces', SpaceController.store);
 routes.put('/spaces/:id', SpaceController.update);
 
