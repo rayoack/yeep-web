@@ -1,5 +1,6 @@
 import Space from '../models/Space';
 import Image from '../models/Image';
+import User from '../models/User';
 import * as Yup from 'yup';
 
 class SpaceController {
@@ -88,6 +89,16 @@ class SpaceController {
       charge_type: Yup.string(),
       capacity: Yup.number(),
     });
+
+    const space = await Space.findByPk(req.params.id)
+
+    if(!space) return res.status(404).json({ error: 'Space not found.' });
+
+    if(space.owner_id != req.userId) return res.status(401).json({ error: 'Not authorized.' });
+
+    await space.update(req.body)
+
+    res.json(space)
   }
 }
 

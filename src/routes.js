@@ -44,5 +44,6 @@ routes.post('/images/:id/events', upload.array('file'), FileController.eventsIma
 
 routes.get('/spaces', SpaceController.index);
 routes.post('/spaces', SpaceController.store);
+routes.put('/spaces/:id', SpaceController.update);
 
 export default routes;

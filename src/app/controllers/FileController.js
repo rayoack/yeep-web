@@ -25,7 +25,7 @@ class ImageController {
         });
       })
 
-      return res.json(images);
+      return res.json();
     } catch (error) {
       res.json(error)
     }
@@ -43,10 +43,11 @@ class ImageController {
         });
       })
 
-      return res.json(images);
+      return res.json();
     } catch (error) {
       res.json(error)
     }
+  }
 }
 
 export default new ImageController();
