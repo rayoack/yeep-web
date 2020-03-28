@@ -46,5 +46,6 @@ routes.get('/spaces', SpaceController.index);
 routes.get('/spaces/:id', SpaceController.show);
 routes.post('/spaces', SpaceController.store);
 routes.put('/spaces/:id', SpaceController.update);
+routes.delete('/spaces/:id', SpaceController.delete);
 
 export default routes;

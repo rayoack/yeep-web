@@ -113,6 +113,22 @@ class SpaceController {
 
     res.json(space)
   }
+
+  async delete(req, res) {
+    try {
+      const space = await Space.findByPk(req.params.id)
+
+      if(!space) return res.status(404).json({ error: 'Space not found.' });
+  
+      if(space.owner_id != req.userId) return res.status(401).json({ error: 'Not authorized.' });
+
+      await space.destroy()
+  
+      res.json()
+    } catch (error) {
+      res.json(error)      
+    }
+  }
 }
 
 export default new SpaceController();
