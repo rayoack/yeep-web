@@ -12,6 +12,7 @@ import AppointmentController from './app/controllers/AppointmentController';
 import ScheduleController from './app/controllers/ScheduleController';
 import NotificationController from './app/controllers/NotificationController';
 import AvailableController from './app/controllers/AvailableController';
+import SpaceController from './app/controllers/SpaceController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -38,5 +39,10 @@ routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/avatar', upload.single('file'), FileController.storeAvatar);
+routes.post('/images/:id/spaces', upload.array('file'), FileController.spaceImages);
+routes.post('/images/:id/events', upload.array('file'), FileController.eventsImages);
+
+routes.get('/spaces', SpaceController.index);
+routes.post('/spaces', SpaceController.store);
 
 export default routes;

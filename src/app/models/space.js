@@ -14,24 +14,8 @@ class Space extends Model {
       price: Sequelize.INTEGER,
       charge_type: Sequelize.INTEGER,
       capacity: Sequelize.INTEGER,
-      features: {
-        type: Sequelize.INTEGER,
-        get() {
-          return this.getDataValue('features').split(',');
-        },
-        set(val) {
-          this.setDataValue('features', val.join(','));
-        },
-      },
-      restrictions: {
-        type: Sequelize.INTEGER,
-        get() {
-          return this.getDataValue('restrictions').split(',');
-        },
-        set(val) {
-          this.setDataValue('restrictions', val.join(','));
-        },
-      },
+      features: Sequelize.STRING,
+      restrictions: Sequelize.STRING,
       services: Sequelize.JSON,
       open_hour: Sequelize.STRING,
       close_hour: Sequelize.STRING,

@@ -4,8 +4,6 @@ class Image extends Model {
   static init(sequelize) {
     super.init({
       name: Sequelize.STRING,
-      space_id: Sequelize.INTEGER,
-      event_id: Sequelize.INTEGER,
       url: Sequelize.STRING,
     }, {
       sequelize,
