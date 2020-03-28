@@ -6,12 +6,7 @@ class Image extends Model {
       name: Sequelize.STRING,
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
-      url: {
-        type: Sequelize.VIRTUAL,
-        get() {
-          return `${ process.env.APP_URL }/files/${ this.path }`;
-        },
-      },
+      url: Sequelize.STRING,
     }, {
       sequelize,
     });

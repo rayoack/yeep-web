@@ -1,12 +1,16 @@
 import Image from '../models/Image';
 
 class ImageController {
-  async store(req, res) {
-    const { originalname: name, filename: path } = req.file;
+  async storeAvatar(req, res) {
+    
+    const file = req.file;
 
-    const image = await Image.create({ name, path });
+    const avatar = await Image.create({
+      name: file.key,
+      url: file.location
+    });
 
-    return res.json(image);
+    return res.json(avatar);
   }
 }
 

@@ -12,12 +12,12 @@ class UserController {
       name: Yup.string().required(),
       email: Yup.string().email().required(),
       password: Yup.string().required().min(6),
-      role: Yup.boolean().required(),
+      role: Yup.string().required(),
       adress: Yup.string(),
       city: Yup.string(),
       state: Yup.string(),
       country: Yup.string(),
-      avatar_id: Yup.integer(),
+      avatar_id: Yup.number(),
     });
 
     try {
@@ -73,7 +73,7 @@ class UserController {
       city: Yup.string(),
       state: Yup.string(),
       country: Yup.string(),
-      avatar_id: Yup.integer(),
+      avatar_id: Yup.number(),
       oldPassword: Yup.string().min(6),
       password: Yup.string().min(6)
         .when('oldPassword', (oldPassword, field) => (oldPassword ? field.required() : field)),
@@ -97,6 +97,7 @@ class UserController {
       city,
       state,
       country,
+      avatar_id
     } = req.body;
     const user = await User.findByPk(req.userId);
 

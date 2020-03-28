@@ -31,7 +31,7 @@ class SessionController {
         {
           model: Image,
           as: 'avatar',
-          attributes: ['id', 'path', 'url'],
+          attributes: ['id', 'name', 'url'],
         },
       ],
     });
