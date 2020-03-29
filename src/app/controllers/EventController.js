@@ -1,7 +1,6 @@
 import Event from '../models/Event';
 import Image from '../models/Image';
 import User from '../models/User';
-import UsersEvents from '../models/UsersEvents';
 import * as Yup from 'yup';
 
 class EventController {
@@ -11,6 +10,11 @@ class EventController {
         {
           model: Image,
           as: 'event_images',
+          attributes: ['id', 'name', 'url'],
+        },
+        {
+          model: Image,
+          as: 'event_logo',
           attributes: ['id', 'name', 'url'],
         },
       ],
@@ -28,6 +32,11 @@ class EventController {
           attributes: ['id', 'name', 'url'],
         },
         {
+          model: Image,
+          as: 'event_logo',
+          attributes: ['id', 'name', 'url'],
+        },
+        {
           model: User,
           as: 'users',
           attributes: ['id', 'name', 'email', 'avatar_id'],
@@ -35,6 +44,8 @@ class EventController {
         },
       ],
     })
+
+    // event.event_logo = Image.findByPk(event.logo)
 
     return res.json(event)
   }
@@ -78,6 +89,36 @@ class EventController {
     newEvent.setUsers(req.userId)
 
     return res.json(newEvent);
+  }
+
+  async setEventLogo(req, res) {
+
+    const event = await Event.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'users',
+          attributes: ['id', 'name',],
+          through: { attributes: [] },
+        },
+      ],
+    })
+
+    if(!event) return res.status(404).json({ error: 'Event not found.' });
+
+    const isAdmin = event.users.filter(user => user.id == req.userId)
+    if(!isAdmin) return res.status(401).json({ error: 'Not authorized.' });
+
+    const file = req.file;
+
+    const logo = await Image.create({
+      name: file.key,
+      url: file.location
+    });
+
+    await event.update({ logo: logo.id})
+
+    return res.json(event);
   }
 
   async update(req, res) {

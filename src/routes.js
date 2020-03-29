@@ -55,5 +55,6 @@ routes.get('/events/:id', EventController.show);
 routes.post('/events', EventController.store);
 routes.put('/events/:id', EventController.update);
 routes.delete('/events/:id', EventController.delete);
+routes.post('/events/:id/logo', upload.single('file'), EventController.setEventLogo);
 
 export default routes;

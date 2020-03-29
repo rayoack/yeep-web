@@ -62,6 +62,24 @@ class UserController {
     });
   }
 
+  async storeAvatar(req, res) {
+
+    const user = await User.findByPk(req.userId)
+
+    if(!user) return res.status(404).json({ error: 'User not found.' });
+
+    const file = req.file;
+
+    const avatar = await Image.create({
+      name: file.key,
+      url: file.location
+    });
+
+    await user.update({ avatar_id: avatar.id})
+
+    return res.json(user);
+  }
+
   async update(req, res) {
     /**
      * Validate user input data.

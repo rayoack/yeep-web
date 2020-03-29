@@ -1,8 +1,13 @@
 import Image from '../models/Image';
+import User from '../models/User';
 
 class ImageController {
   async storeAvatar(req, res) {
-    
+
+    const user = await User.findByPk(req.userId)
+
+    if(!user) return res.status(404).json({ error: 'User not found.' });
+
     const file = req.file;
 
     const avatar = await Image.create({
@@ -10,11 +15,13 @@ class ImageController {
       url: file.location
     });
 
-    return res.json(avatar);
+    await user.update({ avatar_id: avatar.id})
+
+    return res.json(user);
   }
 
   async spaceImages(req, res) {
-    
+
     const file = req.files;
     try {
       file.map(async item => {
@@ -32,7 +39,7 @@ class ImageController {
   }
 
   async eventsImages(req, res) {
-    
+
     const file = req.files;
     try {
       file.map(async item => {
