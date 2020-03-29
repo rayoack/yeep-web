@@ -1,6 +1,5 @@
 import Space from '../models/Space';
 import Image from '../models/Image';
-import User from '../models/User';
 import * as Yup from 'yup';
 
 class SpaceController {
@@ -85,7 +84,7 @@ class SpaceController {
       close_hour,
       owner_id: req.userId
     });
-    
+
     return res.json(newSpace);
   }
 
@@ -103,6 +102,12 @@ class SpaceController {
       capacity: Yup.number(),
     });
 
+    try {
+      await schema.validate(req.body);
+    } catch (err) {
+      return res.status(422).json({ error: `Validation fails: ${ err.message }` });
+    }
+
     const space = await Space.findByPk(req.params.id)
 
     if(!space) return res.status(404).json({ error: 'Space not found.' });
@@ -119,14 +124,14 @@ class SpaceController {
       const space = await Space.findByPk(req.params.id)
 
       if(!space) return res.status(404).json({ error: 'Space not found.' });
-  
+
       if(space.owner_id != req.userId) return res.status(401).json({ error: 'Not authorized.' });
 
       await space.destroy()
-  
+
       res.json()
     } catch (error) {
-      res.json(error)      
+      res.json(error)
     }
   }
 }

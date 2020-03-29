@@ -14,7 +14,7 @@ class UsersEvents extends Model {
       event_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Event',
           key: 'id',
         },
       },
@@ -24,11 +24,10 @@ class UsersEvents extends Model {
     return this;
   }
 
-  static associate(models) {
-    // associations can be defined here
-    models.User.belongsToMany(models.Event, { through: 'UsersEvents' });
-    models.Event.belongsToMany(models.User, { through: 'UsersEvents' });
-  }
+  // static associate(models) {
+  //   models.User.belongsToMany(models.Event, { through: 'UsersEvents' });
+  //   models.Event.belongsToMany(models.User, { through: 'UsersEvents' });
+  // }
 }
 
 export default UsersEvents;

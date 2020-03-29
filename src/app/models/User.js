@@ -29,7 +29,11 @@ class User extends Model {
   static associate(models) {
     this.hasMany(models.Space, { foreignKey: 'owner_id' });
     this.belongsTo(models.Image, { foreignKey: 'avatar_id', as: 'avatar' });
-    this.belongsToMany(models.Event, { through: 'UsersEvents' });
+    this.belongsToMany(models.Event, {
+      through: 'UsersEvents',
+      as: 'events',
+      foreignKey: 'user_id'
+    });
   }
 
   checkPassword(password) {

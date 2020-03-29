@@ -22,7 +22,11 @@ class Event extends Model {
     this.belongsTo(models.Image, { foreignKey: 'logo', as: 'event_logo' });
     this.hasMany(models.Image, { foreignKey: 'event_id', as: 'event_images' });
     this.hasMany(models.Reserve, { foreignKey: 'event_id' });
-    // this.belongsToMany(models.User, { through: 'UsersEvents' });
+    this.belongsToMany(models.User, {
+      through: 'UsersEvents',
+      as: 'users',
+      foreignKey: 'event_id'
+    });
   }
 }
 
