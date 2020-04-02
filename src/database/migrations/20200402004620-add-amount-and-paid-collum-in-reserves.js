@@ -2,26 +2,22 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => (
-    queryInterface.removeColumn(
+    queryInterface.addColumn(
       'reserves',
-      'start_date'
-    ),
-    queryInterface.removeColumn(
-      'reserves',
-      'end_date'
-    ),
-    queryInterface.removeColumn(
-      'reserves',
-      'start_hour'
-    ),
-    queryInterface.removeColumn(
-      'reserves',
-      'end_hour'
+      'amount',
+      {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
     ),
     queryInterface.addColumn(
       'reserves',
-      'dates',
-     Sequelize.JSON
+      'paid',
+      {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+      },
     )
     /*
       Add altering commands here.
@@ -35,8 +31,11 @@ module.exports = {
   down: (queryInterface, Sequelize) => (
     queryInterface.removeColumn(
       'reserves',
-      'dates',
-     Sequelize.JSON
+      'amount'
+    ),
+    queryInterface.removeColumn(
+      'reserves',
+      'paid'
     )
     /*
       Add reverting commands here.

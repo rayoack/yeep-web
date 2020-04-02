@@ -6,23 +6,28 @@ class Reserve extends Model {
     super.init({
       approve: Sequelize.BOOLEAN,
       message: Sequelize.TEXT,
-      start_date: Sequelize.DATE,
-      end_date: Sequelize.DATE,
-      start_hour: Sequelize.STRING,
-      end_hour: Sequelize.STRING,
+      dates: Sequelize.JSON,
+      amount: Sequelize.INTEGER,
+      paid: Sequelize.BOOLEAN,
       canceled_at: Sequelize.DATE,
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
+      startDate: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return this.dates[0].day;
+        },
+      },
       past: {
         type: Sequelize.VIRTUAL,
         get() {
-          return isBefore(this.date, new Date());
+          return isBefore(this.startDate, new Date());
         },
       },
       cancelable: {
         type: Sequelize.VIRTUAL,
         get() {
-          return isBefore(new Date(), subHours(this.date, 2));
+          return isBefore(new Date(), subDays(this.startDate, 2));
         },
       },
     }, {

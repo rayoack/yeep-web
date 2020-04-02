@@ -4,6 +4,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 import Appointment from '../models/Reserve';
 import User from '../models/User';
+import Event from '../models/Event';
 import Image from '../models/Image';
 import Notification from '../schemas/Notification';
 
@@ -11,24 +12,31 @@ import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
 class AppointmentController {
-  async index(req, res) {
-    const { page = 1 } = req.query;
+  async ListSpaceAppointments(req, res) {
+    const { page } = req.params;
 
     const appointments = await Appointment.findAll({
-      where: { user_id: req.userId, canceled_at: null },
-      order: ['date'],
-      attributes: ['id', 'date', 'past', 'cancelable'],
+      where: { space_id: req.params.id, canceled_at: null },
+      order: ['startDate'],
+      attributes: [
+        'id',
+        'dates',
+        'amount',
+        'paid',
+        'past',
+        'cancelable',
+        'approve'
+      ],
       limit: 20,
       offset: (page - 1) * 20,
       include: [
         {
-          model: User,
-          as: 'provider',
-          attributes: ['id', 'name'],
+          model: Event,
+          attributes: ['id', 'title'],
           include: {
             model: Image,
-            as: 'avatar',
-            attributes: ['id', 'path', 'url'],
+            as: 'event_logo',
+            attributes: ['id', 'name', 'url'],
           },
         },
       ],
@@ -42,8 +50,11 @@ class AppointmentController {
      * Validate user input data.
      */
     const schema = Yup.object().shape({
-      provider_id: Yup.number().required(),
-      date: Yup.date().required(),
+      space_id: Yup.number().required(),
+      event_id: Yup.number().required(),
+      message: Yup.string(),
+      amount: Yup.number().required(),
+      paid: Yup.boolean(),
     });
 
     try {
@@ -52,28 +63,25 @@ class AppointmentController {
       return res.status(422).json({ error: `Validation fails: ${ err.message }` });
     }
 
-    const { provider_id, date } = req.body;
+    const { space_id, dates } = req.body;
 
-    /**
-     * Check if provider_id is a provider.
-     */
-    const isProvider = await User.findOne({ where: { id: provider_id, provider: true } });
+    const space = await User.findOne({ where: { id: space_id } });
 
-    if (!isProvider) {
-      return res.status(422).json({ error: 'You can only create appointments with providers.' });
+    if (!space) {
+      return res.status(422).json({ error: "Space not found" });
     }
 
     /**
-     * Check if provider_id is the current user.
+     * Check if space_id is the current user.
      */
-    if (provider_id === req.userId) {
+    if (space.owner_id === req.userId) {
       return res.status(422).json({ error: "You can't create a schedule for yourself." });
     }
 
     /**
      * Check for past dates.
      */
-    const hourStart = startOfHour(parseISO(date));
+    const hourStart = startOfHour(parseISO(dates[0].fullDate));
 
     if (isBefore(hourStart, new Date())) {
       return res.status(422).json({ error: 'Past dates are not permitted.' });
@@ -82,13 +90,16 @@ class AppointmentController {
     /**
      * Check date availability.
      */
-    const checkAvailability = await Appointment.findOne({
+    const spaceReserves = await Appointment.findOne({
       where: {
-        provider_id,
+        space_id,
         canceled_at: null,
-        date: hourStart,
       },
     });
+
+    const checkAvailability = spaceReserves.map(reserve => {
+      reserve.dates
+    })
 
     if (checkAvailability) {
       return res.status(422).json({ error: 'Appointment date is not available.' });
@@ -99,7 +110,7 @@ class AppointmentController {
      */
     const appointment = await Appointment.create({
       user_id: req.userId,
-      provider_id,
+      space_id,
       date: hourStart,
     });
 
@@ -115,7 +126,7 @@ class AppointmentController {
 
     await Notification.create({
       content: `Novo agendamento de ${ user.name } para ${ formattedDate }`,
-      user: provider_id,
+      user: space_id,
     });
 
     return res.json(appointment);
