@@ -2,20 +2,22 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
-import Appointment from '../models/Reserve';
+import Reserve from '../models/Reserve';
 import User from '../models/User';
 import Event from '../models/Event';
 import Image from '../models/Image';
+import Message from '../models/Message';
+import Space from '../models/Space';
 import Notification from '../schemas/Notification';
 
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
 
-class AppointmentController {
-  async ListSpaceAppointments(req, res) {
+class ReserveController {
+  async ListSpaceReserves(req, res) {
     const { page } = req.params;
 
-    const appointments = await Appointment.findAll({
+    const reserves = await Reserve.findAll({
       where: { space_id: req.params.id, canceled_at: null },
       order: ['startDate'],
       attributes: [
@@ -42,7 +44,7 @@ class AppointmentController {
       ],
     });
 
-    return res.json(appointments);
+    return res.json(reserves);
   }
 
   async store(req, res) {
@@ -54,7 +56,6 @@ class AppointmentController {
       event_id: Yup.number().required(),
       message: Yup.string(),
       amount: Yup.number().required(),
-      paid: Yup.boolean(),
     });
 
     try {
@@ -63,9 +64,9 @@ class AppointmentController {
       return res.status(422).json({ error: `Validation fails: ${ err.message }` });
     }
 
-    const { space_id, dates } = req.body;
+    let { space_id, dates, amount, event_id, message } = req.body;
 
-    const space = await User.findOne({ where: { id: space_id } });
+    const space = await Space.findOne({ where: { id: space_id } });
 
     if (!space) {
       return res.status(422).json({ error: "Space not found" });
@@ -81,37 +82,21 @@ class AppointmentController {
     /**
      * Check for past dates.
      */
-    const hourStart = startOfHour(parseISO(dates[0].fullDate));
+    const hourStart = startOfHour(parseISO(dates[0].full_date));
 
     if (isBefore(hourStart, new Date())) {
       return res.status(422).json({ error: 'Past dates are not permitted.' });
     }
 
     /**
-     * Check date availability.
+     * Create reserve.
      */
-    const spaceReserves = await Appointment.findOne({
-      where: {
-        space_id,
-        canceled_at: null,
-      },
-    });
-
-    const checkAvailability = spaceReserves.map(reserve => {
-      reserve.dates
-    })
-
-    if (checkAvailability) {
-      return res.status(422).json({ error: 'Appointment date is not available.' });
-    }
-
-    /**
-     * Create appointment.
-     */
-    const appointment = await Appointment.create({
-      user_id: req.userId,
+    const {id: reserve_id, paid} = await Reserve.create({
       space_id,
-      date: hourStart,
+      event_id,
+      message,
+      amount,
+      dates,
     });
 
     /**
@@ -125,15 +110,36 @@ class AppointmentController {
     );
 
     await Notification.create({
-      content: `Novo agendamento de ${ user.name } para ${ formattedDate }`,
-      user: space_id,
+      user: space.owner_id,
+      target_id: reserve_id,
+      content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
     });
 
-    return res.json(appointment);
+    // Create first message.
+    if(message == null) {
+      message = `Nova reserva de ${ user.name } para ${ formattedDate }`
+    }
+    console.log('AQUI', req.userId)
+    const newMessage = await Message.create({
+      message,
+      room_id: reserve_id,
+      sender_id: req.userId,
+      receiver_id: space.owner_id,
+    })
+
+    return res.json({
+      reserve_id,
+      space_id,
+      event_id,
+      message,
+      amount,
+      dates,
+      paid,
+    });
   }
 
   async delete(req, res) {
-    const appointment = await Appointment.findByPk(req.params.id, {
+    const reserve = await Reserve.findByPk(req.params.id, {
       include: [
         {
           model: User,
@@ -148,24 +154,24 @@ class AppointmentController {
       ],
     });
 
-    if (appointment.user_id !== req.userId) {
-      return res.status(403).json({ error: "You don't have permission to cancel this appointment." });
+    if (reserve.user_id !== req.userId) {
+      return res.status(403).json({ error: "You don't have permission to cancel this reserve." });
     }
 
-    const dateWithSub = subHours(appointment.date, 2);
+    const dateWithSub = subHours(reserve.date, 2);
 
     if (isBefore(dateWithSub, new Date())) {
-      return res.status(403).json({ error: 'You can only cancel appointments 2 hours in advance.' });
+      return res.status(403).json({ error: 'You can only cancel reserve 2 hours in advance.' });
     }
 
-    appointment.canceled_at = new Date();
+    reserve.canceled_at = new Date();
 
-    await appointment.save();
+    await reserve.save();
 
-    await Queue.add(CancellationMail.key, { appointment });
+    await Queue.add(CancellationMail.key, { reserve });
 
-    return res.json(appointment);
+    return res.json(reserve);
   }
 }
 
-export default new AppointmentController();
+export default new ReserveController();

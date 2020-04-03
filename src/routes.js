@@ -9,7 +9,7 @@ import {
   SessionController,
   FileController,
   ProviderController,
-  AppointmentController,
+  ReserveController,
   ScheduleController,
   NotificationController,
   AvailableController,
@@ -31,9 +31,9 @@ routes.put('/users', UserController.update);
 routes.get('/providers', ProviderController.index);
 routes.get('/providers/:providerId/available', AvailableController.index);
 
-routes.get('/appointments/:id', AppointmentController.ListSpaceAppointments);
-routes.post('/appointments', AppointmentController.store);
-routes.delete('/appointments/:id', AppointmentController.delete);
+routes.get('/reserve/:id', ReserveController.ListSpaceReserves);
+routes.post('/reserve', ReserveController.store);
+routes.delete('/reserve/:id', ReserveController.delete);
 
 routes.get('/schedule', ScheduleController.index);
 

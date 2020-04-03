@@ -2,7 +2,7 @@ import UserController from './UserController';
 import SessionController from './SessionController';
 import FileController from './FileController';
 import ProviderController from './ProviderController';
-import AppointmentController from './AppointmentController';
+import ReserveController from './ReserveController';
 import ScheduleController from './ScheduleController';
 import NotificationController from './NotificationController';
 import AvailableController from './AvailableController';
@@ -14,7 +14,7 @@ export {
   SessionController,
   FileController,
   ProviderController,
-  AppointmentController,
+  ReserveController,
   ScheduleController,
   NotificationController,
   AvailableController,
