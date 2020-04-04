@@ -8,9 +8,18 @@ import Image from '../app/models/Image';
 import Reserve from '../app/models/Reserve';
 import Event from '../app/models/Event';
 import Space from '../app/models/Space';
+import Message from '../app/models/Message';
 import UsersEvents from '../app/models/UsersEvents';
 
-const models = [User, Image, Reserve, Event, Space, UsersEvents];
+const models = [
+  User,
+  Image,
+  Reserve,
+  Event,
+  Space,
+  UsersEvents,
+  Message
+];
 
 class Database {
   constructor() {

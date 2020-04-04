@@ -8,6 +8,7 @@ import NotificationController from './NotificationController';
 import AvailableController from './AvailableController';
 import SpaceController from './SpaceController';
 import EventController from './EventController';
+import MessageController from './MessageController';
 
 export {
   UserController,
@@ -20,4 +21,5 @@ export {
   AvailableController,
   SpaceController,
   EventController,
+  MessageController,
 }

@@ -14,7 +14,9 @@ import {
   NotificationController,
   AvailableController,
   SpaceController,
-  EventController, } from './app/controllers/';
+  EventController,
+  MessageController
+} from './app/controllers/';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -56,5 +58,8 @@ routes.post('/events', EventController.store);
 routes.put('/events/:id', EventController.update);
 routes.delete('/events/:id', EventController.delete);
 routes.post('/events/:id/logo', upload.single('file'), EventController.setEventLogo);
+
+routes.get('/messages/:id', MessageController.index)
+routes.post('/messages', MessageController.store)
 
 export default routes;

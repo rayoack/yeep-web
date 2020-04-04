@@ -119,7 +119,7 @@ class ReserveController {
     if(message == null) {
       message = `Nova reserva de ${ user.name } para ${ formattedDate }`
     }
-    console.log('AQUI', req.userId)
+    console.log('AQUI', space.owner_id)
     const newMessage = await Message.create({
       message,
       room_id: reserve_id,
