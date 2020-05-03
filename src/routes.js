@@ -15,7 +15,8 @@ import {
   AvailableController,
   SpaceController,
   EventController,
-  MessageController
+  MessageController,
+  ServiceController
 } from './app/controllers/';
 
 const routes = new Router();
@@ -33,8 +34,10 @@ routes.put('/users', UserController.update);
 routes.get('/providers', ProviderController.index);
 routes.get('/providers/:providerId/available', AvailableController.index);
 
-routes.get('/reserve/:id', ReserveController.ListSpaceReserves);
+routes.get('/reserves/:id/:page', ReserveController.index);
+routes.get('/reserve/:id', ReserveController.show);
 routes.post('/reserve', ReserveController.store);
+routes.put('/reserve/:id', ReserveController.update);
 routes.delete('/reserve/:id', ReserveController.delete);
 
 routes.get('/schedule', ScheduleController.index);
@@ -43,8 +46,10 @@ routes.get('/notifications', NotificationController.index);
 routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/avatar', upload.single('file'), FileController.storeAvatar);
+routes.post('/service/logo/:id', upload.single('file'), FileController.setServiceLogo);
 routes.post('/images/:id/spaces', upload.array('file'), FileController.spaceImages);
 routes.post('/images/:id/events', upload.array('file'), FileController.eventsImages);
+routes.post('/images/:id/service', upload.array('file'), FileController.serviceImages);
 
 routes.get('/spaces', SpaceController.index);
 routes.get('/spaces/:id', SpaceController.show);
@@ -61,5 +66,11 @@ routes.post('/events/:id/logo', upload.single('file'), EventController.setEventL
 
 routes.get('/messages/:id', MessageController.index)
 routes.post('/messages', MessageController.store)
+
+routes.get('/services/:state/:page', ServiceController.index);
+routes.get('/services/:id', ServiceController.show);
+routes.post('/services', ServiceController.store);
+routes.put('/services/:id', ServiceController.update);
+routes.delete('/services/:id', ServiceController.delete);
 
 export default routes;

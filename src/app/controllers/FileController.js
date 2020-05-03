@@ -1,5 +1,6 @@
 import Image from '../models/Image';
 import User from '../models/User';
+import Service from '../models/Service';
 
 class ImageController {
   async storeAvatar(req, res) {
@@ -55,6 +56,45 @@ class ImageController {
       res.json(error)
     }
   }
+
+  async serviceImages(req, res) {
+
+    const file = req.files;
+    try {
+      file.map(async item => {
+        const { id, name, url, service_id } = await Image.create({
+          name: item.key,
+          url: item.location,
+          service_id: req.params.id
+        });
+      })
+
+      return res.json();
+    } catch (error) {
+      res.json(error)
+    }
+  }
+
+  async setServiceLogo(req, res) {
+
+    const service = await Service.findByPk(req.params.id)
+
+    if(!service) return res.status(404).json({ error: 'Service not found.' });
+
+    if(service.user_id != req.userId) return res.status(401).json({ error: 'Not authorized.' });
+
+    const file = req.file;
+
+    const logo = await Image.create({
+      name: file.key,
+      url: file.location
+    });
+
+    await service.update({ logo_id: logo.id})
+
+    return res.json(service);
+  }
+
 }
 
 export default new ImageController();

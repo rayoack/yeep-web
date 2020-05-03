@@ -28,6 +28,7 @@ class Space extends Model {
 
   static associate(models) {
     // associations can be defined here
+    this.hasMany(models.Service, { foreignKey: 'space_id' });
     this.belongsTo(models.User, { foreignKey: 'owner_id' });
     this.hasMany(models.Reserve, { foreignKey: 'space_id' });
     this.hasMany(models.Image, { foreignKey: 'space_id' });

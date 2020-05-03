@@ -10,6 +10,7 @@ import Event from '../app/models/Event';
 import Space from '../app/models/Space';
 import Message from '../app/models/Message';
 import UsersEvents from '../app/models/UsersEvents';
+import Service from '../app/models/Service';
 
 const models = [
   User,
@@ -18,7 +19,8 @@ const models = [
   Event,
   Space,
   UsersEvents,
-  Message
+  Message,
+  Service,
 ];
 
 class Database {

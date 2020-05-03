@@ -5,6 +5,9 @@ import * as Yup from 'yup';
 class SpaceController {
   async index(req, res) {
     const spaces = await Space.findAll({
+      order: [
+        ['createdAt', 'DESC'],
+      ],
       include: [
         {
           model: Image,

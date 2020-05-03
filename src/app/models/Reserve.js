@@ -4,14 +4,16 @@ import { isBefore, subDays } from 'date-fns';
 class Reserve extends Model {
   static init(sequelize) {
     super.init({
-      approve: Sequelize.BOOLEAN,
       message: Sequelize.TEXT,
       dates: Sequelize.JSON,
       amount: Sequelize.INTEGER,
-      paid: Sequelize.BOOLEAN,
       canceled_at: Sequelize.DATE,
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
+      service_id: Sequelize.INTEGER,
+      status: Sequelize.STRING,
+      type: Sequelize.STRING,
+      additional_values: Sequelize.JSON,
       startDate: {
         type: Sequelize.VIRTUAL,
         get() {
@@ -40,6 +42,7 @@ class Reserve extends Model {
   static associate(models) {
     this.belongsTo(models.Space, { foreignKey: 'space_id' });
     this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.Service, { foreignKey: 'service_id' });
   }
 }
 

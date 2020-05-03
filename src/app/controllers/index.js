@@ -9,6 +9,7 @@ import AvailableController from './AvailableController';
 import SpaceController from './SpaceController';
 import EventController from './EventController';
 import MessageController from './MessageController';
+import ServiceController from './ServiceController';
 
 export {
   UserController,
@@ -22,4 +23,5 @@ export {
   SpaceController,
   EventController,
   MessageController,
+  ServiceController,
 }
