@@ -6,6 +6,9 @@ import * as Yup from 'yup';
 class EventController {
   async index(req, res) {
     const Events = await Event.findAll({
+      where: {
+        visible: true
+      },
       order: [
         ['createdAt', 'DESC'],
       ],

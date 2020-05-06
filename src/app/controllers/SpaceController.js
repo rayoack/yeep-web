@@ -5,6 +5,11 @@ import * as Yup from 'yup';
 class SpaceController {
   async index(req, res) {
     const spaces = await Space.findAll({
+      where: {
+        visible: true
+      },
+      limit: 20,
+      offset: (req.params.page - 1) * 20,
       order: [
         ['createdAt', 'DESC'],
       ],
@@ -30,6 +35,27 @@ class SpaceController {
     })
 
     return res.json(space)
+  }
+
+  async mySpaces(req, res) {
+    const spaces = await Space.findAll({
+      where: {
+        owner_id: req.userId
+      },
+      limit: 20,
+      offset: (req.params.page - 1) * 20,
+      order: [
+        ['createdAt', 'DESC'],
+      ],
+      include: [
+        {
+          model: Image,
+          attributes: ['id', 'name', 'url'],
+        },
+      ],
+    })
+
+    return res.json(spaces)
   }
 
   async store(req, res) {

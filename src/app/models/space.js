@@ -16,7 +16,6 @@ class Space extends Model {
       capacity: Sequelize.INTEGER,
       features: Sequelize.STRING,
       restrictions: Sequelize.STRING,
-      services: Sequelize.JSON,
       open_hour: Sequelize.STRING,
       close_hour: Sequelize.STRING,
       owner_id: Sequelize.INTEGER,

@@ -47,7 +47,8 @@ class UserController {
       city,
       state,
       country,
-      avatar_id, } = await User.create(req.body);
+      avatar_id,
+      monetary_unit, } = await User.create(req.body);
 
     return res.status(201).json({
       id,
@@ -59,6 +60,7 @@ class UserController {
       state,
       country,
       avatar_id,
+      monetary_unit,
     });
   }
 
@@ -115,11 +117,13 @@ class UserController {
       city,
       state,
       country,
-      avatar_id
+      avatar_id,
+      role,
+      monetary_unit
     } = req.body;
     const user = await User.findByPk(req.userId);
 
-    if (email !== user.email) {
+    if (email && email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
 
       if (userExists) {
@@ -158,6 +162,8 @@ class UserController {
       city,
       state,
       country,
+      role,
+      monetary_unit
     });
   }
 }

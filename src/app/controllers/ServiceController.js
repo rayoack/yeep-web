@@ -6,7 +6,8 @@ class ServiceController {
   async index(req, res) {
     const services = await Service.findAll({
       where: {
-        state: req.params.state
+        state: req.params.state,
+        visibility: true
       },
       limit: 20,
       offset: (req.params.page - 1) * 20,
@@ -57,6 +58,43 @@ class ServiceController {
     })
 
     return res.json(service)
+  }
+
+  async myServices(req, res) {
+    const services = await Service.findAll({
+      where: {
+        user_id: req.userId,
+      },
+      limit: 20,
+      offset: (req.params.page - 1) * 20,
+      attributes: [
+        'id',
+        'name',
+        'category',
+        'description',
+        'adress',
+        'city',
+        'state',
+        'country',
+        'price',
+        'charge_type',
+        'visibility',
+        'provider_id',
+        'space_id',
+        'user_id',
+        'created_at'
+      ],
+      order: ['created_at'],
+      include: [
+        {
+          model: Image,
+          as: 'service_logo',
+          attributes: ['id', 'name', 'url'],
+        },
+      ],
+    })
+
+    return res.json(services)
   }
 
   async store(req, res) {
