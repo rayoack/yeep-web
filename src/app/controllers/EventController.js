@@ -1,6 +1,7 @@
 import Event from '../models/Event';
 import Image from '../models/Image';
 import User from '../models/User';
+import UsersEvents from '../models/UsersEvents';
 import * as Yup from 'yup';
 
 class EventController {
@@ -54,6 +55,65 @@ class EventController {
     // event.event_logo = Image.findByPk(event.logo)
 
     return res.json(event)
+  }
+
+  async myEvents(req, res) {
+    // const events = await UsersEvents.findAll({
+    //   where: {
+    //     user_id: req.userId,
+    //   },
+    //   limit: 20,
+    //   offset: (req.params.page - 1) * 20,
+    //   order: ['created_at'],
+    //   include: [
+    //     {
+    //       model: Event,
+    //       include: [
+    //         {
+    //           model: Image,
+    //           as: 'event_images',
+    //           attributes: ['id', 'name', 'url'],
+    //         },
+    //         {
+    //           model: Image,
+    //           as: 'event_logo',
+    //           attributes: ['id', 'name', 'url'],
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // })
+
+    const userEvents = await UsersEvents.findAll({
+      where: {
+        user_id: req.userId,
+      }
+    })
+
+    const eventsIds = userEvents.map(user => user.EventId).filter(id => id != null)
+
+    const events = await Event.findAll({
+      where: {
+        id: eventsIds,
+      },
+      limit: 20,
+      offset: (req.params.page - 1) * 20,
+      order: ['created_at'],
+      include: [
+        {
+          model: Image,
+          as: 'event_images',
+          attributes: ['id', 'name', 'url'],
+        },
+        {
+          model: Image,
+          as: 'event_logo',
+          attributes: ['id', 'name', 'url'],
+        },
+      ],
+    })
+
+    return res.json(events)
   }
 
   async store(req, res) {

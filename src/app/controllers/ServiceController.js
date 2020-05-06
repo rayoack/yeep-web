@@ -6,7 +6,6 @@ class ServiceController {
   async index(req, res) {
     const services = await Service.findAll({
       where: {
-        state: req.params.state,
         visibility: true
       },
       limit: 20,

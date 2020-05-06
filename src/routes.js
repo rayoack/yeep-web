@@ -61,6 +61,7 @@ routes.delete('/spaces/:id', SpaceController.delete);
 
 routes.get('/events', EventController.index);
 routes.get('/events/:id', EventController.show);
+routes.get('/myEvents/:page', EventController.myEvents);
 routes.post('/events', EventController.store);
 routes.put('/events/:id', EventController.update);
 routes.delete('/events/:id', EventController.delete);
@@ -69,7 +70,7 @@ routes.post('/events/:id/logo', upload.single('file'), EventController.setEventL
 routes.get('/messages/:id', MessageController.index)
 routes.post('/messages', MessageController.store)
 
-routes.get('/services/:state/:page', ServiceController.index);
+routes.get('/services/:page', ServiceController.index);
 routes.get('/services/:id', ServiceController.show);
 routes.get('/myServices/:page', ServiceController.myServices);
 routes.post('/services', ServiceController.store);
