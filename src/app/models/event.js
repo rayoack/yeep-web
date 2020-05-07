@@ -11,6 +11,14 @@ class Event extends Model {
       budget: Sequelize.INTEGER,
       target_audience: Sequelize.STRING,
       logo: Sequelize.INTEGER,
+      dates: Sequelize.JSON,
+      nomenclature: Sequelize.STRING,
+      visible: Sequelize.BOOLEAN,
+      adress: Sequelize.STRING,
+      state: Sequelize.STRING,
+      city: Sequelize.STRING,
+      country: Sequelize.STRING,
+      online: Sequelize.BOOLEAN,
     }, {
       sequelize,
     });

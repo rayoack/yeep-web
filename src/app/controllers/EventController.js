@@ -58,31 +58,6 @@ class EventController {
   }
 
   async myEvents(req, res) {
-    // const events = await UsersEvents.findAll({
-    //   where: {
-    //     user_id: req.userId,
-    //   },
-    //   limit: 20,
-    //   offset: (req.params.page - 1) * 20,
-    //   order: ['created_at'],
-    //   include: [
-    //     {
-    //       model: Event,
-    //       include: [
-    //         {
-    //           model: Image,
-    //           as: 'event_images',
-    //           attributes: ['id', 'name', 'url'],
-    //         },
-    //         {
-    //           model: Image,
-    //           as: 'event_logo',
-    //           attributes: ['id', 'name', 'url'],
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // })
 
     const userEvents = await UsersEvents.findAll({
       where: {
