@@ -189,7 +189,7 @@ class ReserveController {
       { locale: ptBR },
     );
 
-    await Notification.create({
+    const notification = await Notification.create({
       user:  space_id ?
         space.owner_id
         : service.user_id,
@@ -210,6 +210,12 @@ class ReserveController {
         space.owner_id
         : service.user_id,
     })
+
+    const ownerSocket = req.connectedUsers[notification.user];
+
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('notification', notification);
+    }
 
     return res.json({
       reserve_id,

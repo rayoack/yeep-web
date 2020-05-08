@@ -59,17 +59,9 @@ class EventController {
 
   async myEvents(req, res) {
 
-    const userEvents = await UsersEvents.findAll({
-      where: {
-        user_id: req.userId,
-      }
-    })
-
-    const eventsIds = userEvents.map(user => user.EventId).filter(id => id != null)
-
     const events = await Event.findAll({
-      where: {
-        id: eventsIds,
+      through: {
+        where: { user_id: req.userId }
       },
       limit: 20,
       offset: (req.params.page - 1) * 20,
@@ -88,7 +80,24 @@ class EventController {
       ],
     })
 
-    return res.json(events)
+    const configuredEvents = events.map(event => {
+      let complete_adress = ''
+      let image = event.event_logo ? event.event_logo.url : ''
+
+      if(event.adress != null) {
+        complete_adress = `${event.adress}, ${event.city}, ${event.state}, ${event.country}`
+      }
+
+      return {
+        id: event.id,
+        title: event.title,
+        category: event.category,
+        complete_adress,
+        image
+      }
+    })
+
+    return res.json(configuredEvents)
   }
 
   async store(req, res) {
@@ -115,7 +124,16 @@ class EventController {
       estimated_audience,
       target_audience,
       budget,
-      logo } = req.body;
+      logo,
+      dates,
+      nomenclature,
+      visible,
+      adress,
+      state,
+      city,
+      country,
+      online
+    } = req.body;
 
     const newEvent = await Event.create({
       title,
@@ -125,9 +143,17 @@ class EventController {
       target_audience,
       budget,
       logo,
+      dates,
+      nomenclature,
+      visible,
+      adress,
+      state,
+      city,
+      country,
+      online
     });
 
-    newEvent.setUsers(req.userId)
+    await newEvent.setUsers(req.userId)
 
     return res.json(newEvent);
   }

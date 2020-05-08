@@ -48,7 +48,8 @@ class UserController {
       state,
       country,
       avatar_id,
-      monetary_unit, } = await User.create(req.body);
+      monetary_unit,
+      new_user } = await User.create(req.body);
 
     return res.status(201).json({
       id,
@@ -61,6 +62,7 @@ class UserController {
       country,
       avatar_id,
       monetary_unit,
+      new_user
     });
   }
 
@@ -119,8 +121,10 @@ class UserController {
       country,
       avatar_id,
       role,
-      monetary_unit
+      monetary_unit,
+      new_user
     } = req.body;
+
     const user = await User.findByPk(req.userId);
 
     if (email && email !== user.email) {
@@ -163,7 +167,8 @@ class UserController {
       state,
       country,
       role,
-      monetary_unit
+      monetary_unit,
+      new_user
     });
   }
 }

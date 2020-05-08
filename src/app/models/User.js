@@ -13,6 +13,8 @@ class User extends Model {
       city: Sequelize.STRING,
       state: Sequelize.STRING,
       country: Sequelize.STRING,
+      monetary_unit: Sequelize.STRING,
+      new_user: Sequelize.BOOLEAN,
     }, {
       sequelize,
     });
