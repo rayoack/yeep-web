@@ -14,6 +14,7 @@ class Event extends Model {
       dates: Sequelize.JSON,
       nomenclature: Sequelize.STRING,
       visible: Sequelize.BOOLEAN,
+      location_name: Sequelize.STRING,
       adress: Sequelize.STRING,
       state: Sequelize.STRING,
       city: Sequelize.STRING,

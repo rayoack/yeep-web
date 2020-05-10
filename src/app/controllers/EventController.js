@@ -8,9 +8,9 @@ import * as Yup from 'yup';
 class EventController {
   async index(req, res) {
     const Events = await Event.findAll({
-      // where: {
-      //   visible: true
-      // },
+      where: {
+        visible: true
+      },
       order: [
         ['createdAt', 'DESC'],
       ],
@@ -83,6 +83,7 @@ class EventController {
             'category',
             'dates',
             'visible',
+            'location_name',
             'adress',
             'city',
             'country',
@@ -166,7 +167,8 @@ class EventController {
       state,
       city,
       country,
-      online
+      online,
+      location_name
     } = req.body;
 
     const newEvent = await Event.create(req.body);
