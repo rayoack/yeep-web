@@ -1,5 +1,6 @@
 import Event from '../models/Event';
 import Image from '../models/Image';
+import Ticket from '../models/Ticket';
 import User from '../models/User';
 import UsersEvents from '../models/UsersEvents';
 import * as Yup from 'yup';
@@ -7,9 +8,9 @@ import * as Yup from 'yup';
 class EventController {
   async index(req, res) {
     const Events = await Event.findAll({
-      where: {
-        visible: true
-      },
+      // where: {
+      //   visible: true
+      // },
       order: [
         ['createdAt', 'DESC'],
       ],
@@ -23,6 +24,9 @@ class EventController {
           model: Image,
           as: 'event_logo',
           attributes: ['id', 'name', 'url'],
+        },
+        {
+          model: Ticket,
         },
       ],
     })
@@ -49,6 +53,9 @@ class EventController {
           attributes: ['id', 'name', 'email', 'avatar_id'],
           through: { attributes: [] },
         },
+        {
+          model: Ticket,
+        },
       ],
     })
 
@@ -59,41 +66,68 @@ class EventController {
 
   async myEvents(req, res) {
 
-    const events = await Event.findAll({
-      through: {
-        where: { user_id: req.userId }
-      },
-      limit: 20,
-      offset: (req.params.page - 1) * 20,
-      order: ['created_at'],
+    const usersEvents = await User.findAll({
+      where: { id: req.userId },
+      attributes: ['id', 'name'],
       include: [
         {
-          model: Image,
-          as: 'event_images',
-          attributes: ['id', 'name', 'url'],
+          model: Event,
+          as: 'events',
+          // limit: 20,
+          // offset: (req.params.page - 1) * 20,
+          // order: ['created_at'],
+          attributes: [
+            'id',
+            'title',
+            'description',
+            'category',
+            'dates',
+            'visible',
+            'adress',
+            'city',
+            'country',
+            'state',
+            'online'],
+          include: [
+            {
+              model: Image,
+              as: 'event_images',
+              attributes: ['id', 'name', 'url'],
+            },
+            {
+              model: Image,
+              as: 'event_logo',
+              attributes: ['id', 'name', 'url'],
+            },
+          ],
         },
-        {
-          model: Image,
-          as: 'event_logo',
-          attributes: ['id', 'name', 'url'],
-        },
-      ],
+      ]
     })
 
-    const configuredEvents = events.map(event => {
-      let complete_adress = ''
+    if (usersEvents[0].events.length == 0) {
+      return res.status(200).json(usersEvents[0].events);
+    }
+
+    const configuredEvents = usersEvents[0].events.map(event => {
+      let adress = ''
+      let final_adress = ''
       let image = event.event_logo ? event.event_logo.url : ''
+      let dates = event.dates != null ? event.dates : []
 
       if(event.adress != null) {
-        complete_adress = `${event.adress}, ${event.city}, ${event.state}, ${event.country}`
+        adress = `${event.adress}, ${event.city}`
+        final_adress = `${event.state}, ${event.country}`
       }
 
       return {
         id: event.id,
         title: event.title,
         category: event.category,
-        complete_adress,
-        image
+        dates,
+        adress,
+        final_adress,
+        image,
+        online: event.online
       }
     })
 
@@ -135,25 +169,9 @@ class EventController {
       online
     } = req.body;
 
-    const newEvent = await Event.create({
-      title,
-      description,
-      category,
-      estimated_audience,
-      target_audience,
-      budget,
-      logo,
-      dates,
-      nomenclature,
-      visible,
-      adress,
-      state,
-      city,
-      country,
-      online
-    });
+    const newEvent = await Event.create(req.body);
 
-    await newEvent.setUsers(req.userId)
+    newEvent.setUsers(req.userId)
 
     return res.json(newEvent);
   }

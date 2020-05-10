@@ -24,10 +24,10 @@ class UsersEvents extends Model {
     return this;
   }
 
-  static associate(models) {
-    models.User.belongsToMany(models.Event, { through: 'UsersEvents' });
-    models.Event.belongsToMany(models.User, { through: 'UsersEvents' });
-  }
+  // static associate(models) {
+  //   models.User.belongsToMany(models.Event, { through: 'UsersEvents' });
+  //   models.Event.belongsToMany(models.User, { through: 'UsersEvents' });
+  // }
 }
 
 export default UsersEvents;
