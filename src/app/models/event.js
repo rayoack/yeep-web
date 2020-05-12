@@ -20,6 +20,7 @@ class Event extends Model {
       city: Sequelize.STRING,
       country: Sequelize.STRING,
       online: Sequelize.BOOLEAN,
+      completed_register_steps: Sequelize.JSON,
     }, {
       sequelize,
     });
