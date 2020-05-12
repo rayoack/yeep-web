@@ -4,10 +4,11 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'events',
-      'completed_register_steps',
+      'register_step',
       {
-        type: Sequelize.JSON,
-        allowNull: true
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
       },
     )
   },
@@ -15,7 +16,7 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeColumn(
       'events',
-      'completed_register_steps'
+      'register_step'
     )
   }
 };
