@@ -2,6 +2,7 @@ import Event from '../models/Event';
 import Image from '../models/Image';
 import Ticket from '../models/Ticket';
 import User from '../models/User';
+import Reserve from '../models/Reserve';
 import UsersEvents from '../models/UsersEvents';
 import * as Yup from 'yup';
 
@@ -37,6 +38,9 @@ class EventController {
   async show(req, res) {
     const event = await Event.findByPk(req.params.id, {
       include: [
+        {
+          model: Reserve,
+        },
         {
           model: Image,
           as: 'event_images',
