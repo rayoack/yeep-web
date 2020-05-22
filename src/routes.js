@@ -51,6 +51,7 @@ routes.post('/service/:id/logo', upload.single('file'), FileController.setServic
 routes.post('/images/:id/spaces', upload.array('file'), FileController.spaceImages);
 routes.post('/images/:id/events', upload.array('file'), FileController.eventsImages);
 routes.post('/images/:id/service', upload.array('file'), FileController.serviceImages);
+routes.delete('/images/:id', FileController.delete);
 
 routes.get('/spaces/:page', SpaceController.index);
 routes.get('/spaces/:id', SpaceController.show);
@@ -60,6 +61,7 @@ routes.put('/spaces/:id', SpaceController.update);
 routes.delete('/spaces/:id', SpaceController.delete);
 
 routes.get('/events', EventController.index);
+routes.get('/events/search/:query', EventController.searchEvents);
 routes.get('/events/:id', EventController.show);
 routes.get('/myEvents/:page', EventController.myEvents);
 routes.post('/events', EventController.store);

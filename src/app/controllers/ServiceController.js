@@ -1,10 +1,18 @@
 import Service from '../models/Service';
 import Image from '../models/Image';
 import * as Yup from 'yup';
+import { Op } from 'sequelize'
 
 class ServiceController {
   async index(req, res) {
-    const services = await Service.findAll({
+
+    let state = req.body.state;
+    let category = req.body.category;
+    let chargeType = req.body.chargeType
+    let priceMin = req.body.priceMin;
+    let priceMax = req.body.priceMax;
+
+    let options = {
       where: {
         visibility: true
       },
@@ -35,7 +43,25 @@ class ServiceController {
           attributes: ['id', 'name', 'url'],
         },
       ],
-    })
+    }
+
+    if(state) {
+      options.where.state = state
+    }
+
+    if(category) {
+      options.where.category = category
+    }
+
+    if(chargeType) {
+      options.where.charge_type = chargeType
+    }
+
+    if(priceMin && priceMax) {
+      options.where.price = {[Op.between]: [priceMin, priceMax]}
+    }
+
+    const services = await Service.findAll(options)
 
     return res.json(services)
   }

@@ -1,10 +1,20 @@
 import Space from '../models/Space';
 import Image from '../models/Image';
 import * as Yup from 'yup';
+import { Op } from 'sequelize'
 
 class SpaceController {
   async index(req, res) {
-    const spaces = await Space.findAll({
+    let state = req.body.state;
+    let category = req.body.category;
+    let hasParking = req.body.hasParking
+    let chargeType = req.body.chargeType
+    let capacityMin = req.body.capacityMin;
+    let capacityMax = req.body.capacityMax;
+    let priceMin = req.body.priceMin;
+    let priceMax = req.body.priceMax;
+
+    let options = {
       where: {
         visible: true
       },
@@ -19,7 +29,33 @@ class SpaceController {
           attributes: ['id', 'name', 'url'],
         },
       ],
-    })
+    }
+
+    if(state) {
+      options.where.state = state
+    }
+
+    if(category) {
+      options.where.category = category
+    }
+
+    if(hasParking) {
+      options.where.has_parking = hasParking
+    }
+
+    if(chargeType) {
+      options.where.charge_type = chargeType
+    }
+
+    if(capacityMin && capacityMax) {
+      options.where.capacity = {[Op.between]: [capacityMin, capacityMax]}
+    }
+
+    if(priceMin && priceMax) {
+      options.where.price = {[Op.between]: [priceMin, priceMax]}
+    }
+
+    const spaces = await Space.findAll(options)
 
     return res.json(spaces)
   }

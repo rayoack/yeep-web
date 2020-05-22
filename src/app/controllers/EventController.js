@@ -4,11 +4,20 @@ import Ticket from '../models/Ticket';
 import User from '../models/User';
 import Reserve from '../models/Reserve';
 import UsersEvents from '../models/UsersEvents';
+import Sequelize, { Model } from 'sequelize';
+import db from '../../database'
 import * as Yup from 'yup';
 
 class EventController {
   async index(req, res) {
-    const Events = await Event.findAll({
+
+    let state = req.body.state;
+    let category = req.body.category;
+    let online = req.body.online
+    let startDate = req.body.startDate;
+    let endDate = req.body.endDate;
+
+    let options = {
       where: {
         visible: true
       },
@@ -30,9 +39,40 @@ class EventController {
           model: Ticket,
         },
       ],
-    })
+    }
 
-    return res.json(Events)
+    if(state) {
+      options.where.state = state
+    }
+
+    if(category) {
+      options.where.category = category
+    }
+
+    if(online) {
+      options.where.online = online
+    }
+
+    if(startDate && endDate) {
+      options.where.start_date = {[Op.between]: [startDate, endDate]}
+    }
+
+    const events = await Event.findAll(options)
+
+    return res.json(events)
+  }
+
+  async searchEvents(req, res) {
+    const searchResults = await db.connection.queryInterface.sequelize.query(`
+      SELECT *
+      FROM ${Event.tableName}
+      WHERE _search @@ plainto_tsquery('english', :query);
+    `, {
+      model: Event,
+      replacements: { query: req.params.query },
+    });
+
+    return res.json(searchResults)
   }
 
   async show(req, res) {
@@ -143,11 +183,7 @@ class EventController {
     const schema = Yup.object().shape({
       title: Yup.string().required(),
       description: Yup.string(),
-      category: Yup.string().required(),
-      estimated_audience: Yup.number(),
-      target_audience: Yup.string(),
-      budget: Yup.number(),
-      logo: Yup.number(),
+      category: Yup.string().required()
     });
 
     try {
@@ -184,13 +220,18 @@ class EventController {
 
   async setEventLogo(req, res) {
 
-    const event = await Event.findByPk(req.params.id, {
+    let event = await Event.findByPk(req.params.id, {
       include: [
         {
           model: User,
           as: 'users',
           attributes: ['id', 'name',],
           through: { attributes: [] },
+        },
+        {
+          model: Image,
+          as: 'event_images',
+          attributes: ['id', 'name', 'url'],
         },
       ],
     })
@@ -209,7 +250,7 @@ class EventController {
 
     await event.update({ logo: logo.id})
 
-    return res.json(event);
+    return res.json(logo);
   }
 
   async update(req, res) {
@@ -217,10 +258,6 @@ class EventController {
       name: Yup.string(),
       description: Yup.string(),
       category: Yup.string(),
-      estimated_audience: Yup.number(),
-      target_audience: Yup.string(),
-      budget: Yup.number(),
-      logo: Yup.number(),
     });
 
     try {
@@ -236,6 +273,16 @@ class EventController {
           as: 'users',
           attributes: ['id', 'name',],
           through: { attributes: [] },
+        },
+        {
+          model: Image,
+          as: 'event_images',
+          attributes: ['id', 'name', 'url'],
+        },
+        {
+          model: Image,
+          as: 'event_logo',
+          attributes: ['id', 'name', 'url'],
         },
       ],
     })
