@@ -11,6 +11,7 @@ class Space extends Model {
       country: Sequelize.STRING,
       description: Sequelize.TEXT,
       category: Sequelize.STRING,
+      monetary_unit: Sequelize.STRING,
       price: Sequelize.INTEGER,
       charge_type: Sequelize.INTEGER,
       capacity: Sequelize.INTEGER,
@@ -18,6 +19,9 @@ class Space extends Model {
       restrictions: Sequelize.STRING,
       open_hour: Sequelize.STRING,
       close_hour: Sequelize.STRING,
+      has_parking: Sequelize.BOOLEAN,
+      parking_features: Sequelize.STRING,
+      parking_description: Sequelize.TEXT,
       owner_id: Sequelize.INTEGER,
     }, {
       sequelize,

@@ -5,12 +5,15 @@ import { Op } from 'sequelize'
 
 class SpaceController {
   async index(req, res) {
+
+    let country = req.body.country;
     let state = req.body.state;
     let category = req.body.category;
     let hasParking = req.body.hasParking
     let chargeType = req.body.chargeType
     let capacityMin = req.body.capacityMin;
     let capacityMax = req.body.capacityMax;
+    let monetaryUnit = req.body.monetaryUnit;
     let priceMin = req.body.priceMin;
     let priceMax = req.body.priceMax;
 
@@ -29,6 +32,10 @@ class SpaceController {
           attributes: ['id', 'name', 'url'],
         },
       ],
+    }
+
+    if(country) {
+      options.where.country = country
     }
 
     if(state) {
@@ -51,8 +58,9 @@ class SpaceController {
       options.where.capacity = {[Op.between]: [capacityMin, capacityMax]}
     }
 
-    if(priceMin && priceMax) {
+    if(priceMin && priceMax && monetaryUnit) {
       options.where.price = {[Op.between]: [priceMin, priceMax]}
+      options.where.monetary_unit = monetaryUnit
     }
 
     const spaces = await Space.findAll(options)
@@ -97,15 +105,7 @@ class SpaceController {
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      adress: Yup.string(),
-      city: Yup.string(),
-      state: Yup.string(),
-      country: Yup.string(),
-      description: Yup.string(),
       category: Yup.string().required(),
-      price: Yup.number(),
-      charge_type: Yup.string(),
-      capacity: Yup.number(),
     });
 
     try {
@@ -129,7 +129,11 @@ class SpaceController {
       services,
       restrictions,
       open_hour,
-      close_hour, } = req.body;
+      close_hour,
+      has_parking,
+      parking_features,
+      parking_description,
+      monetary_unit } = req.body;
 
     const newSpace = await Space.create({
       name,
@@ -139,6 +143,7 @@ class SpaceController {
       country,
       description,
       category,
+      monetary_unit,
       price,
       charge_type,
       capacity,
@@ -147,6 +152,9 @@ class SpaceController {
       restrictions,
       open_hour,
       close_hour,
+      has_parking,
+      parking_features,
+      parking_description,
       owner_id: req.userId
     });
 
@@ -156,15 +164,7 @@ class SpaceController {
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
-      adress: Yup.string(),
-      city: Yup.string(),
-      state: Yup.string(),
-      country: Yup.string(),
-      description: Yup.string(),
       category: Yup.string(),
-      price: Yup.number(),
-      charge_type: Yup.string(),
-      capacity: Yup.number(),
     });
 
     try {
