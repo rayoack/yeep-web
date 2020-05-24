@@ -5,17 +5,16 @@ import { Op } from 'sequelize'
 
 class SpaceController {
   async index(req, res) {
-
-    let country = req.body.country;
-    let state = req.body.state;
-    let category = req.body.category;
-    let hasParking = req.body.hasParking
-    let chargeType = req.body.chargeType
-    let capacityMin = req.body.capacityMin;
-    let capacityMax = req.body.capacityMax;
-    let monetaryUnit = req.body.monetaryUnit;
-    let priceMin = req.body.priceMin;
-    let priceMax = req.body.priceMax;
+    let country = req.query.country;
+    let state = req.query.state;
+    let category = req.query.category;
+    let hasParking = req.query.hasParking
+    let chargeType = req.query.chargeType
+    let capacityMin = req.query.capacityMin;
+    let capacityMax = req.query.capacityMax;
+    let monetaryUnit = req.query.monetaryUnit;
+    let priceMin = req.query.priceMin;
+    let priceMax = req.query.priceMax;
 
     let options = {
       where: {
