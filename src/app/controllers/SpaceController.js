@@ -65,7 +65,28 @@ class SpaceController {
 
     const spaces = await Space.findAll(options)
 
-    return res.json(spaces)
+    const mappedSpaces = spaces.map(space => {
+      let adress = ''
+      let images = (space['Images'] && space['Images'].length) ? space.Images : ''
+
+      if(space.adress != null && space.adress.length) {
+        adress = `${space.adress}, ${space.city}, ${space.state}`
+      }
+
+      return {
+        id: space.id,
+        title: space.name,
+        category: space.category,
+        adress,
+        images,
+        capacity: space.capacity,
+        charge_type: space.charge_type,
+        monetary_unit: space.monetary_unit,
+        price: space.price,
+      }
+    })
+
+    return res.json(mappedSpaces)
   }
 
   async show(req, res) {
