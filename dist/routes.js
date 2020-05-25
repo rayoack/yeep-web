@@ -54,7 +54,7 @@ routes.post('/images/:id/service', upload.array('file'), _.FileController.servic
 routes.delete('/images/:id', _.FileController.delete);
 
 routes.get('/spaces/:page', _.SpaceController.index);
-routes.get('/spaces/:id', _.SpaceController.show);
+routes.get('/space/:id', _.SpaceController.show);
 routes.get('/mySpaces/:page', _.SpaceController.mySpaces);
 routes.post('/spaces', _.SpaceController.store);
 routes.put('/spaces/:id', _.SpaceController.update);
@@ -73,7 +73,7 @@ routes.get('/messages/:id', _.MessageController.index)
 routes.post('/messages', _.MessageController.store)
 
 routes.get('/services/:page', _.ServiceController.index);
-routes.get('/services/:id', _.ServiceController.show);
+routes.get('/service/:id', _.ServiceController.show);
 routes.get('/myServices/:page', _.ServiceController.myServices);
 routes.post('/services', _.ServiceController.store);
 routes.put('/services/:id', _.ServiceController.update);
