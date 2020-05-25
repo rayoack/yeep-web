@@ -10,7 +10,7 @@ var _Image = require('../models/Image'); var _Image2 = _interopRequireDefault(_I
 var _Message = require('../models/Message'); var _Message2 = _interopRequireDefault(_Message);
 var _Space = require('../models/Space'); var _Space2 = _interopRequireDefault(_Space);
 var _Service = require('../models/Service'); var _Service2 = _interopRequireDefault(_Service);
-var _Notification = require('../schemas/Notification'); var _Notification2 = _interopRequireDefault(_Notification);
+// import Notification from '../schemas/Notification';
 
 var _Queue = require('../../lib/Queue'); var _Queue2 = _interopRequireDefault(_Queue);
 var _CancellationMail = require('../jobs/CancellationMail'); var _CancellationMail2 = _interopRequireDefault(_CancellationMail);
@@ -189,13 +189,13 @@ class ReserveController {
       { locale: _ptBR2.default },
     );
 
-    const notification = await _Notification2.default.create({
-      user:  space_id ?
-        space.owner_id
-        : service.user_id,
-      target_id: reserve_id,
-      content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
-    });
+    // const notification = await Notification.create({
+    //   user:  space_id ?
+    //     space.owner_id
+    //     : service.user_id,
+    //   target_id: reserve_id,
+    //   content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
+    // });
 
     // Create first message.
     if(message == null) {
@@ -211,11 +211,11 @@ class ReserveController {
         : service.user_id,
     })
 
-    const ownerSocket = req.connectedUsers[notification.user];
+    // const ownerSocket = req.connectedUsers[notification.user];
 
-    if (ownerSocket) {
-      req.io.to(ownerSocket).emit('notification', notification);
-    }
+    // if (ownerSocket) {
+    //   req.io.to(ownerSocket).emit('notification', notification);
+    // }
 
     return res.json({
       reserve_id,

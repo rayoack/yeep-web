@@ -43,8 +43,8 @@ routes.delete('/reserve/:id', _.ReserveController.delete);
 
 routes.get('/schedule', _.ScheduleController.index);
 
-routes.get('/notifications', _.NotificationController.index);
-routes.put('/notifications/:id', _.NotificationController.update);
+// routes.get('/notifications', NotificationController.index);
+// routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/avatar', upload.single('file'), _.FileController.storeAvatar);
 routes.post('/service/:id/logo', upload.single('file'), _.FileController.setServiceLogo);

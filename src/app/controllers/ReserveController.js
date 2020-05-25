@@ -10,7 +10,7 @@ import Image from '../models/Image';
 import Message from '../models/Message';
 import Space from '../models/Space';
 import Service from '../models/Service';
-import Notification from '../schemas/Notification';
+// import Notification from '../schemas/Notification';
 
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
@@ -189,13 +189,13 @@ class ReserveController {
       { locale: ptBR },
     );
 
-    const notification = await Notification.create({
-      user:  space_id ?
-        space.owner_id
-        : service.user_id,
-      target_id: reserve_id,
-      content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
-    });
+    // const notification = await Notification.create({
+    //   user:  space_id ?
+    //     space.owner_id
+    //     : service.user_id,
+    //   target_id: reserve_id,
+    //   content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
+    // });
 
     // Create first message.
     if(message == null) {
@@ -211,11 +211,11 @@ class ReserveController {
         : service.user_id,
     })
 
-    const ownerSocket = req.connectedUsers[notification.user];
+    // const ownerSocket = req.connectedUsers[notification.user];
 
-    if (ownerSocket) {
-      req.io.to(ownerSocket).emit('notification', notification);
-    }
+    // if (ownerSocket) {
+    //   req.io.to(ownerSocket).emit('notification', notification);
+    // }
 
     return res.json({
       reserve_id,
