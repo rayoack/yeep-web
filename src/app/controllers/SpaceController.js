@@ -1,5 +1,6 @@
 import Space from '../models/Space';
 import Image from '../models/Image';
+import User from '../models/User';
 import * as Yup from 'yup';
 import { Op } from 'sequelize'
 
