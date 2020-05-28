@@ -92,6 +92,17 @@ class SpaceController {
     const space = await Space.findByPk(req.params.id, {
       include: [
         {
+          model: User,
+          attributes: ['id', 'name',],
+          include: [
+            {
+              model: Image,
+              as: 'avatar',
+              attributes: ['id', 'name', 'url'],
+            },
+          ]
+        },
+        {
           model: Image,
           attributes: ['id', 'name', 'url'],
         },
