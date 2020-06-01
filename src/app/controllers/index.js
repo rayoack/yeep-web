@@ -11,6 +11,7 @@ import EventController from './EventController';
 import MessageController from './MessageController';
 import ServiceController from './ServiceController';
 import TicketController from './TicketController';
+import PaymentController from './PaymentController';
 
 export {
   UserController,
@@ -26,4 +27,5 @@ export {
   MessageController,
   ServiceController,
   TicketController,
+  PaymentController
 }

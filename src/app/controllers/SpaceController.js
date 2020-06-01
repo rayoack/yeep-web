@@ -1,6 +1,5 @@
 import Space from '../models/Space';
 import Image from '../models/Image';
-import User from '../models/User';
 import * as Yup from 'yup';
 import { Op } from 'sequelize'
 
@@ -92,17 +91,6 @@ class SpaceController {
   async show(req, res) {
     const space = await Space.findByPk(req.params.id, {
       include: [
-        {
-          model: User,
-          attributes: ['id', 'name',],
-          include: [
-            {
-              model: Image,
-              as: 'avatar',
-              attributes: ['id', 'name', 'url'],
-            },
-          ]
-        },
         {
           model: Image,
           attributes: ['id', 'name', 'url'],

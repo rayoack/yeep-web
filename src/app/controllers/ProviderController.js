@@ -5,6 +5,7 @@ import Image from '../models/Image';
 
 class ProviderController {
   async index(req, res) {
+
     const providers = await User.findAll({
       where: { provider: true },
       attributes: ['id', 'name', 'email', 'avatar_id'],
@@ -14,7 +15,7 @@ class ProviderController {
         attributes: ['name', 'path', 'url'],
       }],
     });
-
+   
     return res.json(providers);
   }
 }

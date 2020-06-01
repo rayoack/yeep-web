@@ -17,7 +17,8 @@ import {
   EventController,
   MessageController,
   ServiceController,
-  TicketController
+  TicketController,
+  PaymentController
 } from './app/controllers/';
 
 const routes = new Router();
@@ -84,5 +85,10 @@ routes.get('/ticket/:id', TicketController.show);
 routes.post('/ticket', TicketController.store);
 routes.put('/ticket/:id', TicketController.update);
 routes.delete('/ticket/:id', TicketController.delete);
+
+// payment gateway 
+
+routes.get('/client_token', PaymentController.index);
+routes.get('/process', PaymentController.process);
 
 export default routes;

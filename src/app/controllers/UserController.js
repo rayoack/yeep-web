@@ -29,11 +29,13 @@ class UserController {
     /**
      * Checks if the user already exists.
      */
+   
     const userExists = await User.findOne({ where: { email: req.body.email } });
-
+    
     if (userExists) {
       return res.status(422).json({ error: 'User already exists.' });
     }
+
 
     /**
      * Create a new user.
