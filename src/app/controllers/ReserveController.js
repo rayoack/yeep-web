@@ -235,7 +235,7 @@ class ReserveController {
       include: [
         {
           model: Event,
-          attributes: ['id', 'title', 'category', 'description'],
+          attributes: ['id', 'title', 'category', 'description', 'dates'],
           include: [
             {
               model: Image,
@@ -247,6 +247,24 @@ class ReserveController {
               as: 'users',
               attributes: ['id', 'name'],
               through: { attributes: [] },
+            },
+          ],
+        },
+        {
+          model: Space,
+          attributes: [
+            'id',
+            'name',
+            'description',
+            'category',
+            'price',
+            'charge_type',
+            'monetary_unit'
+          ],
+          include: [
+            {
+              model: Image,
+              attributes: ['id', 'name', 'url'],
             },
           ],
         },
