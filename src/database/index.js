@@ -12,6 +12,7 @@ import Message from '../app/models/Message';
 import UsersEvents from '../app/models/UsersEvents';
 import Service from '../app/models/Service';
 import Ticket from '../app/models/Ticket';
+import ReceiverAccount from '../app/models/ReceiverAccount';
 
 const models = [
   User,
@@ -22,7 +23,8 @@ const models = [
   UsersEvents,
   Message,
   Service,
-  Ticket
+  Ticket,
+  ReceiverAccount
 ];
 
 class Database {
