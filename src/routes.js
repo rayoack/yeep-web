@@ -28,8 +28,9 @@ const upload = multer(multerConfig);
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
-routes.get('/process', PaymentController.process);
-routes.post('/info', PaymentController.info);
+// routes.get('/test', PaymentController.test);
+// routes.get('/process', PaymentController.process);
+// routes.post('/info', PaymentController.info);
 
 routes.use(authMiddleware);
 
@@ -91,10 +92,10 @@ routes.put('/ticket/:id', TicketController.update);
 routes.delete('/ticket/:id', TicketController.delete);
 
 // payment gateway
-routes.post('/userToken', PaymentController.updateUserToken);
-routes.get('/checkout', PaymentController.store);
-routes.get('/success', PaymentController.success);
-routes.get('/pending', PaymentController.pending);
-routes.get('/failure', PaymentController.failure);
+// routes.post('/userToken', PaymentController.updateUserToken);
+// routes.get('/checkout', PaymentController.store);
+// routes.get('/success', PaymentController.success);
+// routes.get('/pending', PaymentController.pending);
+// routes.get('/failure', PaymentController.failure);
 
 export default routes;

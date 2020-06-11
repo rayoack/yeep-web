@@ -183,12 +183,6 @@ class ReserveController {
      * Notify appointment provider.
      */
     const user = await User.findByPk(req.userId);
-    const formattedDate = format(
-      hourStart,
-      "'dia' dd 'de' MMMM', às' H:mm'h'",
-      { locale: ptBR },
-    );
-
     // const notification = await Notification.create({
     //   user:  space_id ?
     //     space.owner_id
@@ -199,7 +193,7 @@ class ReserveController {
 
     // Create first message.
     if(message == null) {
-      message = `Nova reserva de ${ user.name } para ${ formattedDate }`
+      message = `Nova solicitação de reserva de ${ user.name }`
     }
 
     const newMessage = await Message.create({

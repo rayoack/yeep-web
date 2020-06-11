@@ -1,149 +1,163 @@
-const axios = require ('axios');
-const mercadopago = require ('mercadopago');
-const meli = require('mercadolibre');
-import User from '../models/User';
-import ReceiverAccount from '../models/ReceiverAccount';
+// const axios = require ('axios');
+// const mercadopago = require ('mercadopago');
+// const meli = require('mercadolibre');
+// // export { V2 } from 'juno-node-sdk';
+// import { JunoSDK, JunoEnvironments } from 'juno-node-sdk';
 
-class PaymentController {
+// import User from '../models/User';
+// import ReceiverAccount from '../models/ReceiverAccount';
 
-  async store (req, res) {
+// class PaymentController {
 
-    const getFullUrl = (req) =>{
-      const url = req.protocol + '://' + req.get('host');
-      console.log(url)
-      return url;
-    }
+//   async store (req, res) {
 
-    mercadopago.configure({
-        sandbox: process.env.MP_SANDBOX == 'true' ? true : false,
-        access_token: process.env.MP_ACCESS_TOKEN
-    });
+//     const getFullUrl = (req) =>{
+//       const url = req.protocol + '://' + req.get('host');
+//       console.log(url)
+//       return url;
+//     }
 
-    const { id, paymentType, payerEmail, title, description, currency, amount } = req.body;
+//     mercadopago.configure({
+//         sandbox: process.env.MP_SANDBOX == 'true' ? true : false,
+//         access_token: process.env.MP_ACCESS_TOKEN
+//     });
 
-    //Create purchase item object template
-    let purchaseOrder = {
-      items: [
-        {
-          id,
-          title,
-          description,
-          quantity: 1,
-          currency_id: currency,
-          unit_price: parseFloat(amount)
-        }
-      ],
-      payer : {
-        email: payerEmail
-      },
-      marketplace_fee: 10,
-      auto_return : "all",
-      external_reference : id,
-      back_urls : {
-        success : getFullUrl(req) + "/payments/success",
-        pending : getFullUrl(req) + "/payments/pending",
-        failure : getFullUrl(req) + "/payments/failure",
-      }
-    }
+//     const { id, paymentType, payerEmail, title, description, currency, amount } = req.body;
 
-    //Generate init_point to checkout
-    try {
-      const preference = await mercadopago.preferences.create(purchaseOrder);
-      return res.redirect(`${preference.body.init_point}`);
-    }catch(err){
-      return res.send(err.message);
-    }
+//     //Create purchase item object template
+//     let purchaseOrder = {
+//       items: [
+//         {
+//           id,
+//           title,
+//           description,
+//           quantity: 1,
+//           currency_id: currency,
+//           unit_price: parseFloat(amount)
+//         }
+//       ],
+//       payer : {
+//         email: payerEmail
+//       },
+//       marketplace_fee: 10,
+//       auto_return : "all",
+//       external_reference : id,
+//       back_urls : {
+//         success : getFullUrl(req) + "/payments/success",
+//         pending : getFullUrl(req) + "/payments/pending",
+//         failure : getFullUrl(req) + "/payments/failure",
+//       }
+//     }
 
-  }
+//     //Generate init_point to checkout
+//     try {
+//       const preference = await mercadopago.preferences.create(purchaseOrder);
+//       return res.redirect(`${preference.body.init_point}`);
+//     }catch(err){
+//       return res.send(err.message);
+//     }
 
-  async process(req, res) {
-    const { code } = req.query;
+//   }
 
-    res.json(code)
-  }
+//   async process(req, res) {
+//     const { code } = req.query;
 
-  async updateUserToken(req, res) {
-    const { code, updateMp } = req.body;
+//     res.json(code)
+//   }
 
-    if(updateMp) {
+//   async updateUserToken(req, res) {
+//     const { code, updateMp } = req.body;
 
-      const accounts = await ReceiverAccount.findAll({
-        where: { user_id: req.userId }
-      })
+//     if(updateMp) {
 
-      var meliObject = new meli.Meli(
-        process.env.MP_CLIENT_ID,
-        process.env.MP_CLIENT_SECRET_KEY,
-      );
+//       const accounts = await ReceiverAccount.findAll({
+//         where: { user_id: req.userId }
+//       })
 
-      meliObject.authorize(
-        code,
-        'https://yeep-web.herokuapp.com/process',
-        function(error, response){
+//       var meliObject = new meli.Meli(
+//         process.env.MP_CLIENT_ID,
+//         process.env.MP_CLIENT_SECRET_KEY,
+//       );
 
-          if(error) {
-            res.json(error)
+//       meliObject.authorize(
+//         code,
+//         'https://yeep-web.herokuapp.com/process',
+//         function(error, response){
 
-          } else {
+//           if(error) {
+//             res.json(error)
 
-            let accountObj = {
-              user_id: req.userId,
-              receiver_access_token: response.access_token,
-              receiver_refresh_token: response.refresh_token,
-              receiver_user_id: response.user_id,
-              receiver_token_date: new Date()
-            }
+//           } else {
 
-            meliObject.get('users', {
-                ids: [response.user_id]
-            }, async function (err, users) {
+//             let accountObj = {
+//               user_id: req.userId,
+//               receiver_access_token: response.access_token,
+//               receiver_refresh_token: response.refresh_token,
+//               receiver_user_id: response.user_id,
+//               receiver_token_date: new Date()
+//             }
 
-              if(error) {
-                res.json(error)
+//             meliObject.get('users', {
+//                 ids: [response.user_id]
+//             }, async function (err, users) {
 
-              } else {
-                accountObj.receiver_email = users[0].body.email
+//               if(error) {
+//                 res.json(error)
 
-                if(accounts.length) {
-                  const actualAccount = accounts[0]
-                  console.log('actualAccount', actualAccount)
+//               } else {
+//                 accountObj.receiver_email = users[0].body.email
 
-                  await actualAccount.update(accountObj)
+//                 if(accounts.length) {
+//                   const actualAccount = accounts[0]
+//                   console.log('actualAccount', actualAccount)
 
-                  res.json(actualAccount)
+//                   await actualAccount.update(accountObj)
 
-                } else {
+//                   res.json(actualAccount)
 
-                  const account = await ReceiverAccount.create(accountObj)
+//                 } else {
 
-                  res.json(account)
-                }
-              }
-            })
-          }
-        }
-      )
-    }
-  }
+//                   const account = await ReceiverAccount.create(accountObj)
 
-  async success(req, res) {
-    res.json('success')
-  }
+//                   res.json(account)
+//                 }
+//               }
+//             })
+//           }
+//         }
+//       )
+//     }
+//   }
 
-  async info(req, res) {
-    res.json('success')
-  }
+//   async success(req, res) {
+//     res.json('success')
+//   }
 
-  async pending(req, res) {
-    res.json('success')
-  }
+//   async info(req, res) {
+//     res.json('success')
+//   }
 
-  async failure(req, res) {
-    res.json('success')
-  }
+//   async pending(req, res) {
+//     res.json('success')
+//   }
 
+//   async failure(req, res) {
+//     res.json('success')
+//   }
 
-}
+//   async test(req, res) {
 
-export default new PaymentController()
+//     const juno = new JunoSDK({
+//       token: process.env.JUNO_PRIVATE_TOKEN,
+//       clientId: process.env.JUNO_CLIENT_ID,
+//       secret: process.env.JUNO_SECRET,
+//       environment: "sandbox"
+//     })
+
+//     res.json(juno._digitalAccount.junoClient.post)
+//   }
+
+// }
+
+// export default new PaymentController()
 

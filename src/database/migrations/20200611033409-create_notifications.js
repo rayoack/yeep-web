@@ -1,35 +1,30 @@
 'use strict';
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('receiver_accounts', {
+    return queryInterface.createTable('notifications', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      receiver_email: {
-        type: Sequelize.STRING,
-        allowNull: true,
+      content: {
+        type: Sequelize.TEXT
       },
-      receiver_access_token: {
-        type: Sequelize.STRING,
-        allowNull: true,
+      type: {
+        type: Sequelize.STRING
       },
-      receiver_refresh_token: {
-        type: Sequelize.STRING,
-        allowNull: true,
+      type_id: {
+        type: Sequelize.INTEGER
       },
-      receiver_user_id: {
+      sender_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        references: { model: 'users', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false,
       },
-      receiver_token_date: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      user_id: {
+      target_id: {
         type: Sequelize.INTEGER,
         references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
@@ -46,8 +41,7 @@ module.exports = {
       }
     });
   },
-
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('receiver_accounts');
+    return queryInterface.dropTable('notifications');
   }
 };
