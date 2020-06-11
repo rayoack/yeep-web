@@ -12,6 +12,7 @@ import Message from '../app/models/Message';
 import UsersEvents from '../app/models/UsersEvents';
 import Service from '../app/models/Service';
 import Ticket from '../app/models/Ticket';
+import Notification from '../app/models/Notification';
 // import ReceiverAccount from '../app/models/ReceiverAccount';
 
 const models = [
@@ -24,6 +25,7 @@ const models = [
   Message,
   Service,
   Ticket,
+  Notification,
   // ReceiverAccount
 ];
 

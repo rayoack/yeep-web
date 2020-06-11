@@ -10,10 +10,7 @@ import Image from '../models/Image';
 import Message from '../models/Message';
 import Space from '../models/Space';
 import Service from '../models/Service';
-// import Notification from '../schemas/Notification';
-
-import Queue from '../../lib/Queue';
-import CancellationMail from '../jobs/CancellationMail';
+import Notification from '../models/Notification';
 
 class ReserveController {
 
@@ -119,7 +116,7 @@ class ReserveController {
       return res.status(422).json({ error: `Validation fails: ${ err.message }` });
     }
 
-    let { space_id, service_id, dates, amount, event_id, message, status } = req.body;
+    let { space_id, service_id, quantity, amount, event_id, message, status } = req.body;
 
     let space = {}
     let service = {}
@@ -157,15 +154,6 @@ class ReserveController {
     }
 
     /**
-     * Check for past dates.
-     */
-    const hourStart = startOfHour(parseISO(dates[0].full_date));
-
-    if (isBefore(hourStart, new Date())) {
-      return res.status(422).json({ error: 'Past dates are not permitted.' });
-    }
-
-    /**
      * Create reserve.
      */
     const {id: reserve_id} = await Reserve.create({
@@ -174,7 +162,7 @@ class ReserveController {
       event_id,
       message,
       amount,
-      dates,
+      quantity,
       status,
       ...req.body
     });
@@ -182,18 +170,19 @@ class ReserveController {
     /**
      * Notify appointment provider.
      */
-    const user = await User.findByPk(req.userId);
-    // const notification = await Notification.create({
-    //   user:  space_id ?
-    //     space.owner_id
-    //     : service.user_id,
-    //   target_id: reserve_id,
-    //   content: `Nova reserva de ${ user.name } para ${ formattedDate }`,
-    // });
+    const notification = await Notification.create({
+      target_id:  space_id ?
+        space.owner_id
+        : service.user_id,
+      sender_id: req.userId,
+      type: space_id ? 'newSpaceReserve' : 'newServiceReserve',
+      type_id: reserve_id,
+      content: space_id ? space.name : service.name,
+    });
 
     // Create first message.
     if(message == null) {
-      message = `Nova solicitação de reserva de ${ user.name }`
+      message = `Nova solicitação de reserva`
     }
 
     const newMessage = await Message.create({
@@ -205,11 +194,11 @@ class ReserveController {
         : service.user_id,
     })
 
-    // const ownerSocket = req.connectedUsers[notification.user];
+    const ownerSocket = req.connectedUsers[notification.target_id];
 
-    // if (ownerSocket) {
-    //   req.io.to(ownerSocket).emit('notification', notification);
-    // }
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('notification', notification);
+    }
 
     return res.json({
       reserve_id,
@@ -218,7 +207,7 @@ class ReserveController {
       event_id,
       message,
       amount,
-      dates,
+      quantity,
       status,
       ...req.body
     });

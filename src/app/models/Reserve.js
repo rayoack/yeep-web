@@ -11,6 +11,7 @@ class Reserve extends Model {
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
       service_id: Sequelize.INTEGER,
+      quantity: Sequelize.INTEGER,
       status: Sequelize.STRING,
       type: Sequelize.STRING,
       additional_values: Sequelize.JSON,

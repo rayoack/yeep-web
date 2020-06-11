@@ -34,6 +34,8 @@ class MessageController {
 
     const newMessage = await Message.create(req.body)
 
+    req.io.to(newMessage.room_id).emit('message', newMessage);
+
     return res.json(newMessage);
   }
 

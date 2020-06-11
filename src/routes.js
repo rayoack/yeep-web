@@ -11,7 +11,7 @@ import {
   ProviderController,
   ReserveController,
   ScheduleController,
-  // NotificationController,
+  NotificationController,
   AvailableController,
   SpaceController,
   EventController,
@@ -49,8 +49,8 @@ routes.delete('/reserve/:id', ReserveController.delete);
 
 routes.get('/schedule', ScheduleController.index);
 
-// routes.get('/notifications', NotificationController.index);
-// routes.put('/notifications/:id', NotificationController.update);
+routes.get('/notifications', NotificationController.index);
+routes.put('/notifications/:id', NotificationController.update);
 
 routes.post('/avatar', upload.single('file'), FileController.storeAvatar);
 routes.post('/service/:id/logo', upload.single('file'), FileController.setServiceLogo);
