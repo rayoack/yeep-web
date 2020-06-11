@@ -1,5 +1,6 @@
 import Space from '../models/Space';
 import Message from '../models/Message';
+import Notification from '../models/Notification';
 import * as Yup from 'yup';
 
 class MessageController {
@@ -35,6 +36,20 @@ class MessageController {
     const newMessage = await Message.create(req.body)
 
     req.io.to(newMessage.room_id).emit('message', newMessage);
+
+    const notification = await Notification.create({
+      target_id: newMessage.receiver_id,
+      sender_id: newMessage.sender_id,
+      type: 'newMessage',
+      type_id: newMessage.room_id,
+      content: newMessage.message,
+    });
+
+    const ownerSocket = req.connectedUsers[notification.target_id];
+
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('notification', notification);
+    }
 
     return res.json(newMessage);
   }

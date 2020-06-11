@@ -180,6 +180,12 @@ class ReserveController {
       content: space_id ? space.name : service.name,
     });
 
+    const ownerSocket = req.connectedUsers[notification.target_id];
+
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('notification', notification);
+    }
+
     // Create first message.
     if(message == null) {
       message = `Nova solicitação de reserva`
@@ -193,12 +199,6 @@ class ReserveController {
         space.owner_id
         : service.user_id,
     })
-
-    const ownerSocket = req.connectedUsers[notification.target_id];
-
-    if (ownerSocket) {
-      req.io.to(ownerSocket).emit('notification', notification);
-    }
 
     return res.json({
       reserve_id,

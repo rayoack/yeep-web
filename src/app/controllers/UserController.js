@@ -51,10 +51,7 @@ class UserController {
       country,
       avatar_id,
       monetary_unit,
-      new_user,
-      mp_access_token,
-      mp_refresh_token,
-      mp_token_date } = await User.create(req.body);
+      new_user } = await User.create(req.body);
 
     return res.status(201).json({
       id,
@@ -68,9 +65,6 @@ class UserController {
       avatar_id,
       monetary_unit,
       new_user,
-      mp_access_token,
-      mp_refresh_token,
-      mp_token_date
     });
   }
 

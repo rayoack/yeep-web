@@ -5,7 +5,6 @@ class Reserve extends Model {
   static init(sequelize) {
     super.init({
       message: Sequelize.TEXT,
-      dates: Sequelize.JSON,
       amount: Sequelize.INTEGER,
       canceled_at: Sequelize.DATE,
       space_id: Sequelize.INTEGER,

@@ -57,9 +57,6 @@ class SessionController {
       state,
       country,
       role,
-      mp_access_token,
-      mp_refresh_token,
-      mp_token_date
     } = user;
 
     return res.json({
@@ -74,9 +71,6 @@ class SessionController {
         state,
         country,
         role,
-        mp_access_token,
-        mp_refresh_token,
-        mp_token_date
       },
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
