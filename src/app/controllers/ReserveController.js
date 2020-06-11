@@ -116,7 +116,17 @@ class ReserveController {
       return res.status(422).json({ error: `Validation fails: ${ err.message }` });
     }
 
-    let { space_id, service_id, quantity, amount, event_id, message, status } = req.body;
+    let {
+      space_id,
+      service_id,
+      quantity,
+      amount,
+      event_id,
+      message,
+      status,
+      startDate,
+      endDate
+    } = req.body;
 
     let space = {}
     let service = {}
@@ -164,6 +174,8 @@ class ReserveController {
       amount,
       quantity,
       status,
+      startDate,
+      endDate,
       ...req.body
     });
 
@@ -209,6 +221,8 @@ class ReserveController {
       amount,
       quantity,
       status,
+      startDate,
+      endDate,
       ...req.body
     });
   }

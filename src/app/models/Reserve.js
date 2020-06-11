@@ -1,5 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
-import { isBefore, subDays } from 'date-fns';
+import { isBefore, subDays, parseISO } from 'date-fns';
+import isPast from 'date-fns/isPast'
+import isFuture from 'date-fns/isFuture'
 
 class Reserve extends Model {
   static init(sequelize) {
@@ -14,22 +16,18 @@ class Reserve extends Model {
       status: Sequelize.STRING,
       type: Sequelize.STRING,
       additional_values: Sequelize.JSON,
-      startDate: {
-        type: Sequelize.VIRTUAL,
-        get() {
-          return this.dates[0].full_date;
-        },
-      },
+      start_date: Sequelize.DATE,
+      end_date: Sequelize.DATE,
       past: {
         type: Sequelize.VIRTUAL,
         get() {
-          return isBefore(this.startDate, new Date());
+          return isPast(this.end_date);
         },
       },
       cancelable: {
         type: Sequelize.VIRTUAL,
         get() {
-          return isBefore(new Date(), subDays(this.startDate, 10));
+          return isBefore(new Date(), subDays(this.start_date, 7));
         },
       },
     }, {
