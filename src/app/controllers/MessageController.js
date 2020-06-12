@@ -35,7 +35,7 @@ class MessageController {
 
     const newMessage = await Message.create(req.body)
 
-    req.io.to(newMessage.room_id).emit('message', newMessage);
+    req.io.to(`reserve${newMessage.room_id}`).emit('message', newMessage);
 
     const notification = await Notification.create({
       target_id: newMessage.receiver_id,
