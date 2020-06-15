@@ -1,13 +1,13 @@
 import 'dotenv/config';
 
 import express from 'express';
-import cors from 'cors';
 import path from 'path';
-import Youch from 'youch';
+import cors from 'cors';
 import * as Sentry from '@sentry/node';
+import Youch from 'youch';
+import 'express-async-errors';
 import io from 'socket.io';
 import http from 'http';
-import 'express-async-errors';
 
 import routes from './routes';
 import sentryConfig from './config/sentry';
@@ -22,6 +22,7 @@ class App {
     Sentry.init(sentryConfig);
 
     this.socket();
+
     this.middlewares();
     this.routes();
     this.exceptionHandler();
@@ -32,11 +33,10 @@ class App {
 
   socket() {
     this.io = io(this.server);
-
     this.io.on('connection', socket => {
       const { user_id } = socket.handshake.query;
-
       this.connectedUsers[user_id] = socket.id;
+
 
       // Join a room
       socket.on('joinRoom', ({ roomName }) => {
@@ -110,12 +110,13 @@ class App {
     this.app.use(Sentry.Handlers.requestHandler());
     this.app.use(cors());
     this.app.use(express.json());
-    this.app.use('/files', express.static(path.resolve(__dirname, '..', 'tmp', 'uploads')));
-
+    this.app.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
     this.app.use((req, res, next) => {
       req.io = this.io;
       req.connectedUsers = this.connectedUsers;
-
       next();
     });
   }
@@ -126,17 +127,15 @@ class App {
   }
 
   exceptionHandler() {
-    // Middleware with four params it is a middleware for handle exceptions.
     this.app.use(async (err, req, res, next) => {
       if (process.env.NODE_ENV === 'development') {
-        const errors = await new Youch(err, req).toJSON();
-
-        return res.status(500).json(errors);
+        const youch = await new Youch(err, req).toJSON();
+        return res.status(500).json(youch);
       }
 
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error.' });
     });
   }
 }
 
-export default new App().app;
+export default new App().server;
