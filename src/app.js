@@ -28,7 +28,7 @@ class App {
     this.exceptionHandler();
 
     this.connectedUsers = {};
-    this.rooms = []
+    this.rooms = {}
   }
 
   socket() {
@@ -40,22 +40,14 @@ class App {
 
       // Join a room
       socket.on('joinRoom', ({ roomName }) => {
-        let actualRoom = {
-          name: roomName,
-          users: []
+
+        if(!this.rooms[roomName]) {
+          this.rooms[roomName] = {}
         }
 
-        const roomExists = this.romms.filter(room => room.name == roomName)
-
-        if(roomExists.length) {
-          actualRoom = roomExists[0]
-        } else {
-          this.rooms.push(actualRoom)
-        }
+        this.rooms[roomName][user_id] = this.connectedUsers[user_id]
 
         socket.join(roomName)
-
-        actualRoom.users.push(this.connectedUsers[socket.id])
 
         // Broadcast when a user connects
         // socket.broadcast
@@ -66,37 +58,23 @@ class App {
         //   );
 
         // Send users and room info
-        io.to(roomName).emit('usersInRoom', {
+        socket.to(roomName).emit('usersInRoom', {
           room: roomName,
-          users: actualRoom.users
+          users: this.rooms[roomName]
         });
       });
 
       // Leaves a room
       socket.on('leavesRoom', ({ roomName }) => {
-        let actualRoom = {
-          name: roomName,
-          users: []
-        }
 
-        const updatedRooms = this.rooms.map(room => {
-          if(room.name == roomName) {
-            room.users.filter(user => user != socket.id)
-
-            actualRoom = room
-          }
-
-          return room
-        })
-
-        this.rooms = updatedRooms
+        delete this.rooms[roomName][user_id]
 
         socket.leave(roomName);
 
         // Send users and room info
-        io.to(roomName).emit('usersInRoom', {
+        socket.to(roomName).emit('usersInRoom', {
           room: roomName,
-          users: actualRoom.users
+          users: this.rooms[roomName]
         });
       });
 
