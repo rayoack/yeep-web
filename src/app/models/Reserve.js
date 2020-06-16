@@ -18,6 +18,8 @@ class Reserve extends Model {
       additional_values: Sequelize.JSON,
       start_date: Sequelize.DATE,
       end_date: Sequelize.DATE,
+      last_message_target_id: Sequelize.INTEGER,
+      last_message_target_read: Sequelize.BOOLEAN,
       past: {
         type: Sequelize.VIRTUAL,
         get() {
