@@ -17,8 +17,9 @@ class ReserveController {
   async index(req, res) {
     const { page } = req.params;
     let reserves = []
+    console.log(req.query)
 
-    if(req.body.request_type == 'space') {
+    if(req.query.request_type == 'space') {
       reserves = await Reserve.findAll({
         where: { space_id: req.params.id, canceled_at: null },
         order: [
@@ -42,7 +43,7 @@ class ReserveController {
           },
         ],
       });
-    } else if (req.body.request_type == 'event') {
+    } else if (req.query.request_type == 'event') {
 
       reserves = await Reserve.findAll({
         where: { event_id: req.params.id, canceled_at: null },
@@ -67,7 +68,7 @@ class ReserveController {
         ],
       });
 
-    } else if (req.body.request_type == 'service') {
+    } else if (req.query.request_type == 'service') {
 
       reserves = await Reserve.findAll({
         where: { service_id: req.params.id, canceled_at: null },
