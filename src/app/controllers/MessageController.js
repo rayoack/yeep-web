@@ -1,4 +1,6 @@
 import Space from '../models/Space';
+import User from '../models/User';
+import Image from '../models/Image';
 import Message from '../models/Message';
 import Notification from '../models/Notification';
 import * as Yup from 'yup';
@@ -9,6 +11,35 @@ class MessageController {
       where: {
         room_id: req.params.id,
       },
+      order: [
+        ['id', 'DESC']
+      ],
+      include: [
+        {
+          model: User,
+          as: 'sender',
+          attributes: ['id', 'name'],
+          include: {
+            model: Image,
+            as: 'avatar',
+            attributes: ['id', 'name', 'url'],
+          },
+        },
+        {
+          model: User,
+          as: 'receiver',
+          attributes: ['id', 'name'],
+          include: {
+            model: Image,
+            as: 'avatar',
+            attributes: ['id', 'name', 'url'],
+          },
+        },
+        {
+          model: Image,
+          attributes: ['id', 'name', 'url'],
+        },
+      ]
     })
 
 

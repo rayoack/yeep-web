@@ -58,7 +58,12 @@ class ReserveController {
             attributes: [
               'id',
               'name',
-              'category'
+              'category',
+              'adress',
+              'city',
+              'state',
+              'state',
+              'country',
             ],
             include: {
               model: Image,
