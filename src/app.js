@@ -39,8 +39,8 @@ class App {
 
 
       // Join a room
-      socket.on('joinRoom', ({ roomName }) => {
-
+      socket.on('joinRoom', roomName => {
+        console.log('JOOOOOINNNN!!', roomName)
         if(!this.rooms[roomName]) {
           this.rooms[roomName] = {}
         }
@@ -65,7 +65,7 @@ class App {
       });
 
       // Leaves a room
-      socket.on('leavesRoom', ({ roomName }) => {
+      socket.on('leavesRoom', roomName => {
 
         delete this.rooms[roomName][user_id]
 

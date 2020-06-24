@@ -5,6 +5,8 @@ class Message extends Model {
   static init(sequelize) {
     super.init({
       message: Sequelize.TEXT,
+      sender_name: Sequelize.STRING,
+      sender_avatar: Sequelize.STRING,
     }, {
       sequelize,
     });
