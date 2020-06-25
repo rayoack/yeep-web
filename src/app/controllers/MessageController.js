@@ -42,7 +42,6 @@ class MessageController {
       ]
     })
 
-
     return res.json(messages)
   }
 
