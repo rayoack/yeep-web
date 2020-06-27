@@ -37,45 +37,14 @@ class App {
       const { user_id } = socket.handshake.query;
       this.connectedUsers[user_id] = socket.id;
 
-
       // Join a room
       socket.on('joinRoom', roomName => {
-        console.log('JOOOOOINNNN!!', roomName)
-        if(!this.rooms[roomName]) {
-          this.rooms[roomName] = {}
-        }
-
-        this.rooms[roomName][user_id] = this.connectedUsers[user_id]
-
         socket.join(roomName)
-
-        // Broadcast when a user connects
-        // socket.broadcast
-        //   .to(user.room)
-        //   .emit(
-        //     'seeChat',
-        //     user
-        //   );
-
-        // Send users and room info
-        socket.to(roomName).emit('usersInRoom', {
-          room: roomName,
-          users: this.rooms[roomName]
-        });
       });
 
       // Leaves a room
       socket.on('leavesRoom', roomName => {
-
-        delete this.rooms[roomName][user_id]
-
         socket.leave(roomName);
-
-        // Send users and room info
-        socket.to(roomName).emit('usersInRoom', {
-          room: roomName,
-          users: this.rooms[roomName]
-        });
       });
 
       socket.on('disconnect', () => {

@@ -2,7 +2,7 @@ import Space from '../models/Space';
 import User from '../models/User';
 import Image from '../models/Image';
 import Message from '../models/Message';
-import Notification from '../models/Notification';
+import Reserve from '../models/Reserve';
 import * as Yup from 'yup';
 
 class MessageController {
@@ -67,21 +67,41 @@ class MessageController {
 
     req.io.to(`reserve${newMessage.room_id}`).emit('message', newMessage);
 
-    let notification = await Notification.create({
-      target_id: newMessage.receiver_id,
-      sender_id: newMessage.sender_id,
-      type: 'newMessage',
-      type_id: newMessage.room_id,
-      content: newMessage.message,
+    req.io.of('/').in(`reserve${newMessage.room_id}`).clients((error, clients) => {
+
+      let receiversUsersInRoom = []
+      if (error) throw error;
+
+      clients.map(async (client) => {
+      console.log('clients', clients)
+
+
+        for(let user in req.connectedUsers) {
+          if(req.connectedUsers[newMessage.receiver_id] === client && req.connectedUsers.hasOwnProperty(newMessage.receiver_id)) {
+            receiversUsersInRoom.push(user);
+          }
+        }
+
+        if (!receiversUsersInRoom.length) {
+          const reserve = await Reserve.findByPk(newMessage.room_id);
+
+          await reserve.update({
+            last_message_target_id: newMessage.receiver_id,
+            last_message_target_read: false
+          })
+        }
+
+        const ownerSocket = req.connectedUsers[newMessage.receiver_id];
+
+        if (ownerSocket) {
+          req.io.to(ownerSocket).emit('newMessageToRoom', newMessage.room_id);
+        }
+
+      })
+
     });
 
-    const ownerSocket = req.connectedUsers[notification.target_id];
-
-    if (ownerSocket) {
-      req.io.to(ownerSocket).emit('notification', notification);
-    }
-
-    return res.json(newMessage);
+    return res.json({ succes: 'ok' });
   }
 
   async update(req, res) {
