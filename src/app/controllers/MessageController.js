@@ -67,37 +67,24 @@ class MessageController {
 
     req.io.to(`reserve${newMessage.room_id}`).emit('message', newMessage);
 
-    req.io.of('/').in(`reserve${newMessage.room_id}`).clients((error, clients) => {
+    req.io.of('/').in(`reserve${newMessage.room_id}`).clients(async (error, clients) => {
 
-      let receiversUsersInRoom = []
       if (error) throw error;
 
-      clients.map(async (client) => {
-      console.log('clients', clients)
+      if (!clients.includes(req.connectedUsers[newMessage.receiver_id])) {
+        const reserve = await Reserve.findByPk(newMessage.room_id);
 
-
-        for(let user in req.connectedUsers) {
-          if(req.connectedUsers[newMessage.receiver_id] === client && req.connectedUsers.hasOwnProperty(newMessage.receiver_id)) {
-            receiversUsersInRoom.push(user);
-          }
-        }
-
-        if (!receiversUsersInRoom.length) {
-          const reserve = await Reserve.findByPk(newMessage.room_id);
-
-          await reserve.update({
-            last_message_target_id: newMessage.receiver_id,
-            last_message_target_read: false
-          })
-        }
+        await reserve.update({
+          last_message_target_id: newMessage.receiver_id,
+          last_message_target_read: false
+        })
 
         const ownerSocket = req.connectedUsers[newMessage.receiver_id];
 
         if (ownerSocket) {
           req.io.to(ownerSocket).emit('newMessageToRoom', newMessage.room_id);
         }
-
-      })
+      }
 
     });
 
