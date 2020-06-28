@@ -82,7 +82,7 @@ class MessageController {
         const ownerSocket = req.connectedUsers[newMessage.receiver_id];
 
         if (ownerSocket) {
-          req.io.to(ownerSocket).emit('newMessageToRoom', newMessage.room_id);
+          req.io.to(ownerSocket).emit('newMessageToRoom', reserve);
         }
       }
 
