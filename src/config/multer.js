@@ -16,7 +16,7 @@ export default {
 
   storage: multerS3({
     s3: s3,
-    bucket: 'yeep-store',
+    bucket: process.env.AWS_S3_BUCKET ? process.env.AWS_S3_BUCKET : 'klub-store-dev',
     contentType: multerS3.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});
