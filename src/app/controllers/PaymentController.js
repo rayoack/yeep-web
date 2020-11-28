@@ -1,4 +1,5 @@
 import User from '../models/User';
+import JunoAccount from '../models/JunoAccount';
 import Image from '../models/Image';
 import qs from 'qs';
 import axios from 'axios';
@@ -6,7 +7,7 @@ import { junoUrlBase } from '../utils/payments'
 
 class PaymentController {
   async getAccessToken({ req, res }) {
-      try {
+    try {
 
         let config = {
             headers: {
@@ -20,11 +21,96 @@ class PaymentController {
         };
 
         const response = await axios.post(`${junoUrlBase}/authorization-server/oauth/token`, qs.stringify(requestBody), config)
-        
-        return res.json(response.data);
-      } catch (error) {
+
+        return response.data;
+    } catch (error) {
         return res.json(error);
-      }
+    }
+  }
+
+  async createDigitalAccount(req, res) {
+    let body = req.body;
+    let junoAccessToken = body.access_token;
+    delete body.access_token; 
+
+    let config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${junoAccessToken}`,
+            'X-Api-Version': 2,
+            'X-Resource-Token': process.env.JUNO_PRIVATE_TOKEN
+        }
+    }
+
+    try {
+        const user = await User.findByPk(req.userId);
+    
+        const requestBody = {
+            // Dados do front req.body
+                        // bankAccount: {
+            //     bankNumber: "033",
+            //     agencyNumber: "3333",
+            //     accountNumber: "010731000",
+            //     accountComplementNumber: "",
+            //     accountType: "CHECKING",
+            //     accountHolder: {
+            //       name: "Test PF",
+            //       document: "01234567890"
+            //     }
+            // }
+
+            // SE PJ adicionar
+            // "businessArea": "2016", (SE PF SETAR 2016)
+            // "companyType": "MEI",
+            // "tradingName": "Yeep",
+            // "businessUrl": "https://www.yeep-web.com",  (SE PF SETAR URL DA YEEP)
+            // "legalRepresentative": {
+            //     "name": "Joel Barbosa Junior",
+            //     "document": "06210416705",
+            //     "birthDate": "1994-08-23"
+            // },
+            // ---------####----------
+
+            // Se o tipo for payment/organizer passa o line of business e é removido o businessUrl
+            // "linesOfBusiness": "Organização de eventos",
+            // ---------####----------
+            
+            type: user.role != 'organizer' ? 'RECEIVING' : 'PAYMENT',
+            name: user.name,
+            document: user.cpf_cnpj,
+            email: user.email,
+            phone: user.phone_number,
+            birthDate: user.date_of_birth,
+            autoApprove: true,
+            address: {
+                street: user.adress,
+                number: user.adress_number,
+                complement: "",
+                neighborhood: "",
+                city: user.city,
+                state: user.state,
+                postCode: user.post_code
+            },
+            ...body,
+        };
+    
+        const response = await axios.post(`${junoUrlBase}/api-integration/digital-accounts`, requestBody, config)
+    
+        const digitalAccount = await JunoAccount.create({
+            user_id: user.id,
+            juno_id: response.data.id,
+            resource_token: response.data.resourceToken,
+            account_type: response.data.type,
+            account_status: response.data.status
+        });
+
+        return res.json(digitalAccount);
+        
+    } catch (error) {
+        res.json(error);
+    }
+
+
   }
 }
 

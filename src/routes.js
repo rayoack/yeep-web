@@ -102,6 +102,7 @@ routes.delete('/ticket/:id', TicketController.delete);
 
 // PAYMENTS
 routes.post('/payments/access-token', PaymentController.getAccessToken);
+routes.post('/payments/digital-account', PaymentController.createDigitalAccount);
 // routes.get('/checkout', PaymentController.store);
 // routes.get('/success', PaymentController.success);
 // routes.get('/pending', PaymentController.pending);

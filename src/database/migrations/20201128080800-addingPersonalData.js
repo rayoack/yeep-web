@@ -55,11 +55,7 @@ module.exports = {
     ),
     queryInterface.removeColumn(
       'users',
-      'street'
-    ),
-    queryInterface.removeColumn(
-      'users',
-      'number'
+      'phone_number'
     ),
     queryInterface.removeColumn(
       'users',

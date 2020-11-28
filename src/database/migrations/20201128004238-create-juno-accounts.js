@@ -16,7 +16,7 @@ module.exports = {
         allowNull: false,
       },
       juno_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       resource_token: {
         type: Sequelize.STRING,
@@ -30,11 +30,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
