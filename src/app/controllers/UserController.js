@@ -141,6 +141,11 @@ class UserController {
       role,
       monetary_unit,
       new_user,
+      cpf_cnpj,
+      date_of_birth,
+      phone_number,
+      post_code,
+      adress_number
     } = req.body;
 
     const user = await User.findByPk(req.userId);
@@ -186,7 +191,12 @@ class UserController {
       country,
       role,
       monetary_unit,
-      new_user
+      new_user,
+      cpf_cnpj,
+      date_of_birth,
+      phone_number,
+      post_code,
+      adress_number
     });
   }
 }

@@ -13,6 +13,7 @@ import UsersEvents from '../app/models/UsersEvents';
 import Service from '../app/models/Service';
 import Ticket from '../app/models/Ticket';
 import Notification from '../app/models/Notification';
+import JunoAccount from '../app/models/JunoAccount';
 
 const models = [
   User,
@@ -24,7 +25,8 @@ const models = [
   Message,
   Service,
   Ticket,
-  Notification
+  Notification,
+  JunoAccount
 ];
 
 class Database {
