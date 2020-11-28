@@ -1,3 +1,35 @@
+import User from '../models/User';
+import Image from '../models/Image';
+import qs from 'qs';
+import axios from 'axios';
+import { junoUrlBase } from '../utils/payments'
+
+class PaymentController {
+  async getAccessToken({ req, res }) {
+      try {
+
+        let config = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Basic ${process.env.JUNO_BASIC_AUTHORIZATION}`
+            }
+        }
+
+        const requestBody = {
+            grant_type: 'client_credentials'
+        };
+
+        const response = await axios.post(`${junoUrlBase}/authorization-server/oauth/token`, qs.stringify(requestBody), config)
+        
+        return res.json(response.data);
+      } catch (error) {
+        return res.json(error);
+      }
+  }
+}
+
+export default new PaymentController();
+
 // const axios = require ('axios');
 // const mercadopago = require ('mercadopago');
 // const meli = require('mercadolibre');

@@ -32,7 +32,6 @@ class User extends Model {
     this.hasMany(models.Space, { foreignKey: 'owner_id' });
     this.hasMany(models.Space, { foreignKey: 'owner_id' });
     this.hasMany(models.Service, { foreignKey: 'provider_id' });
-    // this.hasMany(models.ReceiverAccount, { foreignKey: 'user_id' });
     this.belongsTo(models.Image, { foreignKey: 'avatar_id', as: 'avatar' });
     this.belongsToMany(models.Event, {
       through: 'UsersEvents',

@@ -39,6 +39,7 @@
     "paypal-adaptive": "^0.4.2",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
+    "qs": "^6.9.4",
     "request": "^2.88.2",
     "sequelize": "^5.19.7",
     "socket.io": "^2.3.0",
