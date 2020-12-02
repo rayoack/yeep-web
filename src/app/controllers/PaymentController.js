@@ -44,6 +44,18 @@ class PaymentController {
 
     try {
         const user = await User.findByPk(req.userId);
+
+        const accountType = user.role != 'organizer' ? 'RECEIVING' : 'PAYMENT';
+
+        if(accountType === 'PAYMENT' && !body.linesOfBusiness) {
+            return res.json({ error: 'Contas do tipo PAYMENT devem conter o campo linesOfBusiness' });
+        } else if(accountType === 'PAYMENT' && body.businessUrl) {
+            return res.json({ error: 'Contas do tipo PAYMENT não ddevem conter o campo businessUrl' });
+        } else if(accountType === 'RECEIVING' && !body.businessUrl) {
+            return res.json({ error: 'Contas do tipo RECEIVING devem conter o campo businessUrl' });
+        } else if(accountType === 'RECEIVING' && body.linesOfBusiness) {
+            return res.json({ error: 'Contas do tipo RECEIVING não devem conter o campo linesOfBusiness' });
+        }
     
         const requestBody = {
             // Dados do front req.body
@@ -75,7 +87,7 @@ class PaymentController {
             // "linesOfBusiness": "Organização de eventos",
             // ---------####----------
             
-            type: user.role != 'organizer' ? 'RECEIVING' : 'PAYMENT',
+            type: accountType,
             name: user.name,
             document: user.cpf_cnpj,
             email: user.email,
@@ -110,6 +122,38 @@ class PaymentController {
         res.json(error);
     }
 
+
+  }
+
+  async checkBalance(req, res) {
+    let body = req.body;
+    let junoAccessToken = body.access_token;
+
+    if(!junoAccessToken) return res.json({ error: 'Access token é obrigatório' });
+
+    try {
+        const account = await JunoAccount.findOne({
+            where: { user_id: req.userId },
+        });
+
+        if(!account) return res.json({ error: 'Não foi encontrada uma conta para esse usuário' });
+        
+
+        let config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${junoAccessToken}`,
+                'X-Api-Version': 2,
+                'X-Resource-Token': account.resource_token
+            }
+        }
+
+        const response = await axios.get(`${junoUrlBase}/api-integration/balance`, config)
+
+        res.json(response.data);
+    } catch (error) {
+        res.json(error);
+    }
 
   }
 }
