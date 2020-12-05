@@ -1,5 +1,7 @@
 import User from '../models/User';
 import JunoAccount from '../models/JunoAccount';
+import Account from '../models/Account';
+import BankAccount from '../models/BankAccount';
 import Image from '../models/Image';
 import qs from 'qs';
 import axios from 'axios';
@@ -42,74 +44,68 @@ class PaymentController {
         }
     }
 
-    try {
+    // try {
         const user = await User.findByPk(req.userId);
 
-        const accountType = user.role != 'organizer' ? 'RECEIVING' : 'PAYMENT';
-
-        if(accountType === 'PAYMENT' && !body.linesOfBusiness) {
-            return res.json({ error: 'Contas do tipo PAYMENT devem conter o campo linesOfBusiness' });
-        } else if(accountType === 'PAYMENT' && body.businessUrl) {
-            return res.json({ error: 'Contas do tipo PAYMENT não ddevem conter o campo businessUrl' });
-        } else if(accountType === 'RECEIVING' && !body.businessUrl) {
-            return res.json({ error: 'Contas do tipo RECEIVING devem conter o campo businessUrl' });
-        } else if(accountType === 'RECEIVING' && body.linesOfBusiness) {
-            return res.json({ error: 'Contas do tipo RECEIVING não devem conter o campo linesOfBusiness' });
-        }
-    
-        const requestBody = {
-            // Dados do front req.body
-                        // bankAccount: {
-            //     bankNumber: "033",
-            //     agencyNumber: "3333",
-            //     accountNumber: "010731000",
-            //     accountComplementNumber: "",
-            //     accountType: "CHECKING",
-            //     accountHolder: {
-            //       name: "Test PF",
-            //       document: "01234567890"
-            //     }
-            // }
-
-            // SE PJ adicionar
-            // "businessArea": "2016", (SE PF SETAR 2016)
-            // "companyType": "MEI",
-            // "tradingName": "Yeep",
-            // "businessUrl": "https://www.yeep-web.com",  (SE PF SETAR URL DA YEEP)
-            // "legalRepresentative": {
-            //     "name": "Joel Barbosa Junior",
-            //     "document": "06210416705",
-            //     "birthDate": "1994-08-23"
-            // },
-            // ---------####----------
-
-            // Se o tipo for payment/organizer passa o line of business e é removido o businessUrl
-            // "linesOfBusiness": "Organização de eventos",
-            // ---------####----------
-            
-            type: accountType,
-            name: user.name,
-            document: user.cpf_cnpj,
-            email: user.email,
-            phone: user.phone_number,
-            birthDate: user.date_of_birth,
-            autoApprove: true,
-            address: {
-                street: user.adress,
-                number: user.adress_number,
-                complement: "",
-                neighborhood: "",
-                city: user.city,
-                state: user.state,
-                postCode: user.post_code
+        const account = await Account.findAll({
+            where: {
+                user_id: req.userId,
+                default: true
             },
-            ...body,
-        };
+            limit: 1,
+            include: [
+                {
+                    model: BankAccount
+                },
+            ],
+        })
+
+        let requestBody = {
+            type: 'PAYMENT',
+            name: user.name,
+            document: account[0].cpf_cnpj,
+            email: user.email,
+            phone: account[0].phone_number,
+            birthDate: account[0].date_of_birth,
+            autoApprove: true,
+            linesOfBusiness: "Organização de eventos",
+            address: {
+                street: account[0].adress,
+                number: account[0].adress_number,
+                complement: account[0].complement ? account[0].complement : '',
+                neighborhood: "",
+                city: account[0].city,
+                state: account[0].state,
+                postCode: account[0].post_code
+            },
+            businessArea: account[0].business_area ? account[0].business_area : '2016',
+            bankAccount: {
+                bankNumber: account[0].BankAccount.bank_number,
+                agencyNumber: account[0].BankAccount.agency_number,
+                accountNumber: account[0].BankAccount.account_number,
+                accountComplementNumber: account[0].BankAccount.complement ? account[0].BankAccount.complement : '',
+                accountType: account[0].BankAccount.account_type,
+                accountHolder: {
+                    name: account[0].BankAccount.account_holder_name,
+                    document: account[0].BankAccount.account_holder_document
+                }
+            }
+        }
+
+        if(account[0].account_type === 'PJ') {
+            requestBody.companyType = account[0].company_type;
+            requestBody.tradingName = account[0].trading_name;
+            requestBody.legalRepresentative = {
+                name: account[0].legal_representative_name,
+                document: account[0].legal_representative_document,
+                birthDate: account[0].legal_representative_date_of_birth
+            }
+        }
     
         const response = await axios.post(`${junoUrlBase}/api-integration/digital-accounts`, requestBody, config)
     
         const digitalAccount = await JunoAccount.create({
-            user_id: user.id,
+            account_id: account[0].id,
             juno_id: response.data.id,
             resource_token: response.data.resourceToken,
             account_type: response.data.type,
@@ -118,9 +114,9 @@ class PaymentController {
 
         return res.json(digitalAccount);
         
-    } catch (error) {
-        res.json(error);
-    }
+    // } catch (error) {
+    //     res.json(error);
+    // }
 
 
   }
@@ -131,29 +127,43 @@ class PaymentController {
 
     if(!junoAccessToken) return res.json({ error: 'Access token é obrigatório' });
 
-    try {
-        const account = await JunoAccount.findOne({
-            where: { user_id: req.userId },
+    // try {
+        const account = await Account.findOne({
+            where: {
+                user_id: req.userId,
+                default: true
+            }
+        })
+
+        if(!account) return res.json({ 
+            error: 'Não foi encontrada nenhuma conta esse usuário',
+            type: 'Account not found'
+         });
+
+        const junoAccount = await JunoAccount.findOne({
+            where: { account_id: account.id }
         });
 
-        if(!account) return res.json({ error: 'Não foi encontrada uma conta para esse usuário' });
-        
+        if(!junoAccount) return res.json({ 
+            error: 'Não foi encontrada uma conta digital para esse usuário',
+            type: 'Digital account not found'
+        });
 
         let config = {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${junoAccessToken}`,
                 'X-Api-Version': 2,
-                'X-Resource-Token': account.resource_token
+                'X-Resource-Token': junoAccount.resource_token
             }
         }
 
         const response = await axios.get(`${junoUrlBase}/api-integration/balance`, config)
 
         res.json(response.data);
-    } catch (error) {
-        res.json(error);
-    }
+    // } catch (error) {
+    //     res.json(error);
+    // }
 
   }
 }

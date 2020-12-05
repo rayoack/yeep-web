@@ -14,6 +14,8 @@ import Service from '../app/models/Service';
 import Ticket from '../app/models/Ticket';
 import Notification from '../app/models/Notification';
 import JunoAccount from '../app/models/JunoAccount';
+import Account from '../app/models/Account';
+import BankAccount from '../app/models/BankAccount';
 
 const models = [
   User,
@@ -26,7 +28,9 @@ const models = [
   Service,
   Ticket,
   Notification,
-  JunoAccount
+  Account,
+  JunoAccount,
+  BankAccount
 ];
 
 class Database {

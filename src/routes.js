@@ -18,7 +18,9 @@ import {
   MessageController,
   ServiceController,
   TicketController,
-  PaymentController
+  PaymentController,
+  AccountController,
+  BankAccountController
 } from './app/controllers/';
 
 const routes = new Router();
@@ -108,5 +110,18 @@ routes.get('/payments/check-balance', PaymentController.checkBalance);
 // routes.get('/success', PaymentController.success);
 // routes.get('/pending', PaymentController.pending);
 // routes.get('/failure', PaymentController.failure);
+
+// ACCOUNTS
+routes.get('/accounts', AccountController.index);
+routes.get('/accounts/:id', AccountController.show);
+routes.post('/accounts', AccountController.store);
+routes.put('/accounts/:id', AccountController.update);
+routes.delete('/accounts/:id', AccountController.delete);
+
+// ACCOUNTS
+routes.get('/bank-accounts/:id', BankAccountController.show);
+routes.post('/bank-accounts', BankAccountController.store);
+routes.put('/bank-accounts/:id', BankAccountController.update);
+routes.delete('/bank-accounts/:id', BankAccountController.delete);
 
 export default routes;

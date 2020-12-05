@@ -1,14 +1,16 @@
-'use strict';
 import Sequelize, { Model } from 'sequelize';
 
-class JunoAccount extends Model {
+class BankAccount extends Model {
   static init(sequelize) {
     super.init({
       account_id: Sequelize.INTEGER,
-      juno_id: Sequelize.INTEGER,
-      resource_token: Sequelize.STRING,
+      bank_number: Sequelize.STRING,
+      agency_number: Sequelize.STRING,
+      account_number: Sequelize.STRING,
+      account_complement_number: Sequelize.STRING,
       account_type: Sequelize.STRING,
-      account_status: Sequelize.STRING
+      account_holder_name: Sequelize.STRING,
+      account_holder_document: Sequelize.STRING
     }, {
       sequelize,
     });
@@ -19,7 +21,6 @@ class JunoAccount extends Model {
   static associate(models) {
     this.belongsTo(models.Account, { foreignKey: 'account_id' });
   }
-
 }
 
-export default JunoAccount;
+export default BankAccount;

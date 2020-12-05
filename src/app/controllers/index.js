@@ -12,6 +12,8 @@ import MessageController from './MessageController';
 import ServiceController from './ServiceController';
 import TicketController from './TicketController';
 import PaymentController from './PaymentController';
+import AccountController from './AccountController';
+import BankAccountController from './BankAccountController';
 
 export {
   UserController,
@@ -27,5 +29,7 @@ export {
   MessageController,
   ServiceController,
   TicketController,
-  PaymentController
+  PaymentController,
+  AccountController,
+  BankAccountController
 }

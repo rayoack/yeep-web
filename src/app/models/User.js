@@ -15,11 +15,6 @@ class User extends Model {
       country: Sequelize.STRING,
       monetary_unit: Sequelize.STRING,
       new_user: Sequelize.BOOLEAN,
-      cpf_cnpj: Sequelize.STRING,
-      date_of_birth: Sequelize.STRING,
-      phone_number: Sequelize.STRING,
-      post_code: Sequelize.STRING,
-      adress_number: Sequelize.STRING,
     }, {
       sequelize,
     });

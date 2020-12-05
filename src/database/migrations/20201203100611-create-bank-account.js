@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('juno_accounts', {
+    return queryInterface.createTable('bank_accounts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,20 +15,26 @@ module.exports = {
         onDelete: 'CASCADE',
         allowNull: false,
       },
-      juno_id: {
-        type: Sequelize.STRING,
+      bank_number: {
+        type: Sequelize.STRING
       },
-      resource_token: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      agency_number: {
+        type: Sequelize.STRING
+      },
+      account_number: {
+        type: Sequelize.STRING
+      },
+      account_complement_number: {
+        type: Sequelize.STRING
       },
       account_type: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.STRING
       },
-      account_status: {
-        type: Sequelize.STRING,
-        allowNull: false,
+      account_holder_name: {
+        type: Sequelize.STRING
+      },
+      account_holder_document: {
+        type: Sequelize.STRING
       },
       created_at: {
         allowNull: false,
@@ -41,6 +47,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('juno_accounts');
+    return queryInterface.dropTable('bank_accounts');
   }
 };
