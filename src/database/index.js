@@ -16,6 +16,7 @@ import Notification from '../app/models/Notification';
 import JunoAccount from '../app/models/JunoAccount';
 import Account from '../app/models/Account';
 import BankAccount from '../app/models/BankAccount';
+import JunoToken from '../app/models/JunoToken';
 
 const models = [
   User,
@@ -30,7 +31,8 @@ const models = [
   Notification,
   Account,
   JunoAccount,
-  BankAccount
+  BankAccount,
+  JunoToken
 ];
 
 class Database {

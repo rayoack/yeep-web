@@ -2,6 +2,7 @@ import User from '../models/User';
 import JunoAccount from '../models/JunoAccount';
 import Account from '../models/Account';
 import BankAccount from '../models/BankAccount';
+import { PaymentServices } from '../services'
 import Image from '../models/Image';
 import qs from 'qs';
 import axios from 'axios';
@@ -9,25 +10,14 @@ import { junoUrlBase } from '../utils/payments'
 
 class PaymentController {
   async getAccessToken({ req, res }) {
-    try {
-
-        let config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Basic ${process.env.JUNO_BASIC_AUTHORIZATION}`
-            }
-        }
-
-        const requestBody = {
-            grant_type: 'client_credentials'
-        };
-
-        const response = await axios.post(`${junoUrlBase}/authorization-server/oauth/token`, qs.stringify(requestBody), config)
-
-        return response.data;
-    } catch (error) {
-        return res.json(error);
-    }
+    // try {
+        const token = await PaymentServices.getAccessToken()
+        
+        console.log({token})
+        return res.json(token);
+    // } catch (error) {
+    //     return res.json(error);
+    // }
   }
 
   async createDigitalAccount(req, res) {
