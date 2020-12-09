@@ -156,7 +156,7 @@ class PaymentController {
 
     async info(req, res) {
         console.log('okkkkkkkkkk');
-        console.log(req);
+        console.log('REQ BODY', req.body);
         res.json(req.body)
     }
 }
