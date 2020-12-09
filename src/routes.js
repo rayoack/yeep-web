@@ -107,7 +107,7 @@ routes.post('/payments/access-token', PaymentController.getAccessToken);
 routes.post('/payments/digital-account', PaymentController.createDigitalAccount);
 routes.get('/payments/check-balance', PaymentController.checkBalance);
 // routes.get('/checkout', PaymentController.store);
-// routes.get('/success', PaymentController.success);
+routes.get('/success', PaymentController.info);
 // routes.get('/pending', PaymentController.pending);
 // routes.get('/failure', PaymentController.failure);
 

@@ -12,7 +12,7 @@ import axios from 'axios';
 import { junoUrlBase } from '../utils/payments'
 
 class PaymentServices {
-    async getAccessToken(id) {
+    async getAccessToken() {
         const junoToken = await JunoToken.findAll({
           where: {
             access_token: {
@@ -33,7 +33,6 @@ class PaymentServices {
             const isTokenExpired = await this.tokenIsExpired(junoToken[0]);
 
             if(isTokenExpired || !junoToken[0].access_token) {
-                console.log('okkkkkkkkkk')
                 const newAccessToken = await this.getAccessTokenFromJunoApi();
 
                 const tokenDataUpdated = await JunoToken.update({

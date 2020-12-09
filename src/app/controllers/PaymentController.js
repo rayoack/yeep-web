@@ -21,9 +21,7 @@ class PaymentController {
   }
 
   async createDigitalAccount(req, res) {
-    let body = req.body;
-    let junoAccessToken = body.access_token;
-    delete body.access_token; 
+    let junoAccessToken = await PaymentServices.getAccessToken();
 
     let config = {
         headers: {
@@ -52,7 +50,7 @@ class PaymentController {
 
         let requestBody = {
             type: 'PAYMENT',
-            name: user.name,
+            name: account[0].legal_representative_name,
             document: account[0].cpf_cnpj,
             email: user.email,
             phone: account[0].phone_number,
@@ -112,8 +110,7 @@ class PaymentController {
   }
 
   async checkBalance(req, res) {
-    let body = req.body;
-    let junoAccessToken = body.access_token;
+    let junoAccessToken =  await PaymentServices.getAccessToken();
 
     if(!junoAccessToken) return res.json({ error: 'Access token é obrigatório' });
 
@@ -156,6 +153,12 @@ class PaymentController {
     // }
 
   }
+
+    async info(req, res) {
+        console.log('okkkkkkkkkk');
+        console.log(req);
+        res.json('success')
+    }
 }
 
 export default new PaymentController();
