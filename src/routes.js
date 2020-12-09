@@ -29,6 +29,7 @@ const upload = multer(multerConfig);
 // Routes without authentication.
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
+routes.get('/success', PaymentController.info);
 
 // routes.get('/test', PaymentController.test);
 // routes.get('/process', PaymentController.process);
@@ -107,7 +108,6 @@ routes.post('/payments/access-token', PaymentController.getAccessToken);
 routes.post('/payments/digital-account', PaymentController.createDigitalAccount);
 routes.get('/payments/check-balance', PaymentController.checkBalance);
 // routes.get('/checkout', PaymentController.store);
-routes.get('/success', PaymentController.info);
 // routes.get('/pending', PaymentController.pending);
 // routes.get('/failure', PaymentController.failure);
 
