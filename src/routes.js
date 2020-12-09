@@ -29,7 +29,7 @@ const upload = multer(multerConfig);
 // Routes without authentication.
 routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
-routes.get('/success', PaymentController.info);
+routes.post('/success', PaymentController.info);
 
 // routes.get('/test', PaymentController.test);
 // routes.get('/process', PaymentController.process);
