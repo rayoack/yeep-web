@@ -19,7 +19,7 @@ class SpaceController {
 
     let options = {
       where: {
-        visible: true
+        visible: false
       },
       limit: 20,
       offset: (req.params.page - 1) * 20,
