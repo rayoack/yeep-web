@@ -23,6 +23,7 @@ class Space extends Model {
       parking_features: Sequelize.STRING,
       parking_description: Sequelize.TEXT,
       owner_id: Sequelize.INTEGER,
+      visible: Sequelize.BOOLEAN
     }, {
       sequelize,
     });

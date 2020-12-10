@@ -165,7 +165,8 @@ class SpaceController {
       has_parking,
       parking_features,
       parking_description,
-      monetary_unit } = req.body;
+      monetary_unit,
+      visible } = req.body;
 
     const newSpace = await Space.create({
       name,
@@ -187,7 +188,8 @@ class SpaceController {
       has_parking,
       parking_features,
       parking_description,
-      owner_id: req.userId
+      owner_id: req.userId,
+      visible
     });
 
     return res.json(newSpace);
