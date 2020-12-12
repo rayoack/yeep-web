@@ -55,8 +55,7 @@ class PaymentController {
             email: user.email,
             phone: account[0].phone_number,
             birthDate: account[0].date_of_birth,
-            autoApprove: true,
-            linesOfBusiness: "Organização de eventos",
+            linesOfBusiness: account[0].line_of_business ? account[0].line_of_business : "Organização de eventos",
             address: {
                 street: account[0].adress,
                 number: account[0].adress_number,
