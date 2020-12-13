@@ -24,6 +24,7 @@ class Account extends Model {
       legal_representative_date_of_birth: Sequelize.STRING,
       account_status: Sequelize.STRING,
       default: Sequelize.BOOLEAN,
+      register_step: Sequelize.INTEGER,
     }, {
       sequelize,
     });
