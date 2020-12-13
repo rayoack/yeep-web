@@ -12,9 +12,13 @@ class PaymentController {
   async getAccessToken({ req, res }) {
     // try {
         const token = await PaymentServices.getAccessToken()
-        
-        console.log({token})
-        return res.json(token);
+
+        let response = {
+            token,
+            environment: process.env.NODE_ENV
+        }
+
+        return res.json(response);
     // } catch (error) {
     //     return res.json(error);
     // }
