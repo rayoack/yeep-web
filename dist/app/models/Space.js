@@ -23,6 +23,8 @@ class Space extends _sequelize.Model {
       parking_features: _sequelize2.default.STRING,
       parking_description: _sequelize2.default.TEXT,
       owner_id: _sequelize2.default.INTEGER,
+      visible: _sequelize2.default.BOOLEAN,
+      register_step: _sequelize2.default.INTEGER,
     }, {
       sequelize,
     });
