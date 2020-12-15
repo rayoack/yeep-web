@@ -39,12 +39,7 @@ class PaymentController {
     // try {
         const user = await User.findByPk(req.userId);
 
-        const account = await Account.findAll({
-            where: {
-                user_id: req.userId,
-                default: true
-            },
-            limit: 1,
+        const account = await Account.findByPk(req.body.accountId, {
             include: [
                 {
                     model: BankAccount
@@ -52,44 +47,46 @@ class PaymentController {
             ],
         })
 
+        if(!account) return res.json({ error: 'Account not found' });
+
         let requestBody = {
             type: 'PAYMENT',
-            name: account[0].legal_representative_name,
-            document: account[0].cpf_cnpj,
+            name: account.legal_representative_name,
+            document: account.cpf_cnpj,
             email: user.email,
-            phone: account[0].phone_number,
-            birthDate: account[0].date_of_birth,
-            linesOfBusiness: account[0].line_of_business ? account[0].line_of_business : "Organização de eventos",
+            phone: account.phone_number,
+            birthDate: account.date_of_birth,
+            linesOfBusiness: account.line_of_business ? account.line_of_business : "Organização de eventos",
             address: {
-                street: account[0].adress,
-                number: account[0].adress_number,
-                complement: account[0].complement ? account[0].complement : '',
+                street: account.adress,
+                number: account.adress_number,
+                complement: account.complement ? account.complement : '',
                 neighborhood: "",
-                city: account[0].city,
-                state: account[0].state,
-                postCode: account[0].post_code
+                city: account.city,
+                state: account.state,
+                postCode: account.post_code
             },
-            businessArea: account[0].business_area ? account[0].business_area : '2016',
+            businessArea: account.business_area ? account.business_area : '2016',
             bankAccount: {
-                bankNumber: account[0].BankAccount.bank_number,
-                agencyNumber: account[0].BankAccount.agency_number,
-                accountNumber: account[0].BankAccount.account_number,
-                accountComplementNumber: account[0].BankAccount.complement ? account[0].BankAccount.complement : '',
-                accountType: account[0].BankAccount.account_type,
+                bankNumber: account.BankAccount.bank_number,
+                agencyNumber: account.BankAccount.agency_number,
+                accountNumber: account.BankAccount.account_number,
+                accountComplementNumber: account.BankAccount.complement ? account.BankAccount.complement : '',
+                accountType: account.BankAccount.account_type,
                 accountHolder: {
-                    name: account[0].BankAccount.account_holder_name,
-                    document: account[0].BankAccount.account_holder_document
+                    name: account.BankAccount.account_holder_name,
+                    document: account.BankAccount.account_holder_document
                 }
             }
         }
 
-        if(account[0].account_type === 'PJ') {
-            requestBody.companyType = account[0].company_type;
-            requestBody.tradingName = account[0].trading_name;
+        if(account.account_type === 'PJ') {
+            requestBody.companyType = account.company_type;
+            requestBody.tradingName = account.trading_name;
             requestBody.legalRepresentative = {
-                name: account[0].legal_representative_name,
-                document: account[0].legal_representative_document,
-                birthDate: account[0].legal_representative_date_of_birth
+                name: account.legal_representative_name,
+                document: account.legal_representative_document,
+                birthDate: account.legal_representative_date_of_birth
             }
         }
     
@@ -97,7 +94,7 @@ class PaymentController {
     
         if(response.data && response.data.resourceToken) {
             const digitalAccount = await JunoAccount.create({
-                account_id: account[0].id,
+                account_id: account.id,
                 juno_id: response.data.id,
                 resource_token: response.data.resourceToken,
                 account_type: response.data.type,
