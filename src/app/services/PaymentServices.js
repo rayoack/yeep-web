@@ -9,7 +9,7 @@ import Account from '../models/Account';
 import BankAccount from '../models/BankAccount';
 import qs from 'qs';
 import axios from 'axios';
-import { junoUrlBase } from '../utils/payments'
+import { junoUrlBaseAuthorization } from '../utils/payments'
 
 class PaymentServices {
     async getAccessToken() {
@@ -66,7 +66,7 @@ class PaymentServices {
             grant_type: 'client_credentials'
         };
 
-        const response = await axios.post(`${junoUrlBase}/authorization-server/oauth/token`, qs.stringify(requestBody), config)
+        const response = await axios.post(`${junoUrlBaseAuthorization}/authorization-server/oauth/token`, qs.stringify(requestBody), config)
 
         return response.data;
     }

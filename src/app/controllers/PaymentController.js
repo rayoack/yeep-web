@@ -47,8 +47,6 @@ class PaymentController {
             ],
         })
 
-        console.log('ACCOUNT!!!!', account)
-
         if(!account) return res.json({ error: 'Account not found' });
 
         let requestBody = {
@@ -66,7 +64,7 @@ class PaymentController {
                 neighborhood: "",
                 city: account.city,
                 state: account.state,
-                postCode: account.post_code
+                postCode: account.post_code,
             },
             businessArea: account.business_area ? account.business_area : '2016',
             bankAccount: {
@@ -92,8 +90,7 @@ class PaymentController {
             }
         }
     
-        console.log('REQUEST JUNO BODY!!!!', requestBody)
-        const response = await axios.post(`${junoUrlBase}/api-integration/digital-accounts`, requestBody, config)
+        const response = await axios.post(`${junoUrlBase}/digital-accounts`, requestBody, config)
     
         if(response.data && response.data.resourceToken) {
             const digitalAccount = await JunoAccount.create({
@@ -104,7 +101,7 @@ class PaymentController {
                 account_status: response.data.status
             });
 
-            let config = {
+            let configNotification = {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${junoAccessToken}`,
@@ -113,8 +110,6 @@ class PaymentController {
                 }
             }
             
-            console.log('NOTIFICATIONS CONFIG!!!!', requestBody)
-            
             const webhookForm = {
                 url: `${process.env.APP_URL}/info`,
                 eventTypes: [
@@ -122,7 +117,7 @@ class PaymentController {
                 ]
             }
 
-            await axios.post(`${junoUrlBase}/notifications/webhooks`, webhookForm, config)
+            await axios.post(`${junoUrlBase}/notifications/webhooks`, webhookForm, configNotification)
     
             return res.json(digitalAccount);
         } else {
