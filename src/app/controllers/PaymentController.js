@@ -95,15 +95,37 @@ class PaymentController {
     
         const response = await axios.post(`${junoUrlBase}/api-integration/digital-accounts`, requestBody, config)
     
-        const digitalAccount = await JunoAccount.create({
-            account_id: account[0].id,
-            juno_id: response.data.id,
-            resource_token: response.data.resourceToken,
-            account_type: response.data.type,
-            account_status: response.data.status
-        });
+        if(response.data && response.data.resourceToken) {
+            const digitalAccount = await JunoAccount.create({
+                account_id: account[0].id,
+                juno_id: response.data.id,
+                resource_token: response.data.resourceToken,
+                account_type: response.data.type,
+                account_status: response.data.status
+            });
 
-        return res.json(digitalAccount);
+            let config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${junoAccessToken}`,
+                    'X-Api-Version': 2,
+                    'X-Resource-Token': response.data.resource_token
+                }
+            }
+            
+            const webhookForm = {
+                url: `${process.env.APP_URL}/info`,
+                eventTypes: [
+                    "DOCUMENT_STATUS_CHANGED", "DIGITAL_ACCOUNT_STATUS_CHANGED", "TRANSFER_STATUS_CHANGED", "PAYMENT_NOTIFICATION", "CHARGE_STATUS_CHANGED"
+                ]
+            }
+
+            await axios.post(`${junoUrlBase}/notifications/webhooks`, webhookForm, config)
+    
+            return res.json(digitalAccount);
+        } else {
+            return res.json(response);
+        }
         
     // } catch (error) {
     //     res.json(error);
