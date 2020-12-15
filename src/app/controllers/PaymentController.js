@@ -106,9 +106,11 @@ class PaymentController {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${junoAccessToken}`,
                     'X-Api-Version': 2,
-                    'X-Resource-Token': response.data.resource_token
+                    'X-Resource-Token': digitalAccount.resource_token
                 }
             }
+            
+            console.log('NOTIFICATIONS CONFIG!!!!', configNotification)
             
             const webhookForm = {
                 url: `${process.env.APP_URL}/info`,
@@ -117,8 +119,10 @@ class PaymentController {
                 ]
             }
 
-            await axios.post(`${junoUrlBase}/notifications/webhooks`, webhookForm, configNotification)
+            console.log('NOTIFICATIONS webhookForm!!!!', webhookForm)
+            const notificationResponse = await axios.post(`${junoUrlBase}/notifications/webhooks`, webhookForm, configNotification)
     
+            console.log({notificationResponse})
             return res.json(digitalAccount);
         } else {
             return res.json(response);
