@@ -47,6 +47,8 @@ class PaymentController {
             ],
         })
 
+        console.log('ACCOUNT!!!!', account)
+
         if(!account) return res.json({ error: 'Account not found' });
 
         let requestBody = {
@@ -90,6 +92,7 @@ class PaymentController {
             }
         }
     
+        console.log('REQUEST JUNO BODY!!!!', requestBody)
         const response = await axios.post(`${junoUrlBase}/api-integration/digital-accounts`, requestBody, config)
     
         if(response.data && response.data.resourceToken) {
@@ -109,6 +112,8 @@ class PaymentController {
                     'X-Resource-Token': response.data.resource_token
                 }
             }
+            
+            console.log('NOTIFICATIONS CONFIG!!!!', requestBody)
             
             const webhookForm = {
                 url: `${process.env.APP_URL}/info`,
