@@ -107,9 +107,7 @@ routes.delete('/ticket/:id', TicketController.delete);
 routes.post('/payments/access-token', PaymentController.getAccessToken);
 routes.post('/payments/digital-account', PaymentController.createDigitalAccount);
 routes.get('/payments/check-balance', PaymentController.checkBalance);
-// routes.get('/checkout', PaymentController.store);
-// routes.get('/pending', PaymentController.pending);
-// routes.get('/failure', PaymentController.failure);
+routes.get('/payments/check-documents/:id', PaymentController.checkDocuments);
 
 // ACCOUNTS
 routes.get('/accounts', AccountController.index);
@@ -118,7 +116,7 @@ routes.post('/accounts', AccountController.store);
 routes.put('/accounts/:id', AccountController.update);
 routes.delete('/accounts/:id', AccountController.delete);
 
-// ACCOUNTS
+// BANKS
 routes.get('/bank-accounts/:id', BankAccountController.show);
 routes.post('/bank-accounts', BankAccountController.store);
 routes.put('/bank-accounts/:id', BankAccountController.update);

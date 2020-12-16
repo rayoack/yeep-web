@@ -171,13 +171,41 @@ class PaymentController {
             }
         }
 
-        const response = await axios.get(`${junoUrlBase}/api-integration/balance`, config)
+        const response = await axios.get(`${junoUrlBase}/balance`, config)
 
         res.json(response.data);
     // } catch (error) {
     //     res.json(error);
     // }
 
+  }
+
+  async checkDocuments(req, res) {
+    let junoAccessToken =  await PaymentServices.getAccessToken();
+
+    if(!junoAccessToken) return res.json({ error: 'Access token é obrigatório' });
+
+    const junoAccount = await JunoAccount.findOne({
+        where: { id: req.params.id }
+    });
+
+    if(!junoAccount) return res.json({ 
+        error: 'Não foi encontrada a conta digital do usuário',
+        type: 'Digital account not found'
+    });
+
+    let config = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${junoAccessToken}`,
+            'X-Api-Version': 2,
+            'X-Resource-Token': junoAccount.resource_token
+        }
+    }
+
+    const response = await axios.get(`${junoUrlBase}/documents`, config)
+
+    res.json(response.data._embedded.documents);
   }
 
     async info(req, res) {
