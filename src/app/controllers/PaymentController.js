@@ -148,18 +148,18 @@ class PaymentController {
             }
         })
 
-        if(!account) return res.json({ 
-            error: 'Não foi encontrada nenhuma conta esse usuário',
-            type: 'Account not found'
+        if(!account) return res.status(404).json({ 
+            error: 'Não foi encontrada nenhuma conta para esse usuário',
+            type: 'accountNotFound'
          });
 
         const junoAccount = await JunoAccount.findOne({
             where: { account_id: account.id }
         });
 
-        if(!junoAccount) return res.json({ 
+        if(!junoAccount) return res.status(404).json({ 
             error: 'Não foi encontrada uma conta digital para esse usuário',
-            type: 'Digital account not found'
+            type: 'digitalAccountNotFound'
         });
 
         let config = {
