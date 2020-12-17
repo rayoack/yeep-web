@@ -4,7 +4,9 @@ import isPast from 'date-fns/isPast'
 import addMinutes from 'date-fns/addMinutes'
 import addHours from 'date-fns/addHours'
 import JunoAccount from '../models/JunoAccount';
+import Account from '../models/Account';
 import JunoToken from '../models/JunoToken';
+import Notification from '../models/Notification';
 import Account from '../models/Account';
 import BankAccount from '../models/BankAccount';
 import qs from 'qs';
@@ -79,6 +81,42 @@ class PaymentServices {
         } else {
             return isPast(addMinutes(junoToken.updatedAt, 45));
         }
+    }
+
+    async updateAccountStatus(event, req) {
+        if(!event.entityId) return
+
+        const junoAccount = await JunoAccount.findOne({ where: { juno_id: event.entityId } });
+
+        if(!junoAccount) return
+
+        await junoAccount.update({ account_status: event.attributes.status});
+
+        const account = await Account.findOne({
+            where: {
+                id: junoAccount.account_id
+            },
+            include: {
+              model: User,
+              attributes: ['id'],
+            },
+        });
+
+        const notification = await Notification.create({
+            target_id: account.User.id,
+            sender_id: account.User.id,
+            type: 'digitalAccountStatusChanged',
+            type_id: account.id,
+            content: 'digitalAccountStatusChanged',
+        });
+        
+        const ownerSocket = req.connectedUsers[notification.target_id];
+
+        if (ownerSocket) {
+            req.io.to(ownerSocket).emit('notification', notification);
+        }
+
+        return
     }
 }
 

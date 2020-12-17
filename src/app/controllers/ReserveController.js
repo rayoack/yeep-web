@@ -17,7 +17,6 @@ class ReserveController {
   async index(req, res) {
     const { page } = req.params;
     let reserves = []
-    console.log(req.query)
 
     if(req.query.request_type == 'space') {
       reserves = await Reserve.findAll({
@@ -73,10 +72,38 @@ class ReserveController {
         ],
       });
 
-    } else if (req.query.request_type == 'service') {
+    } else if (req.query.request_type == 'organizer') {
 
       reserves = await Reserve.findAll({
-        where: { service_id: req.params.id, canceled_at: null },
+        where: { organizer_id: req.params.id, canceled_at: null },
+        order: [
+          ['updatedAt', 'DESC'],
+        ],
+        limit: 20,
+        offset: (page - 1) * 20,
+        include: [
+          {
+            model: Space,
+            attributes: [
+              'id',
+              'name',
+              'category',
+              'adress',
+              'city',
+              'state',
+              'state',
+              'country',
+            ],
+            include: {
+              model: Image,
+              attributes: ['id', 'name', 'url'],
+            },
+          },
+        ],
+      });
+    } else if (req.query.request_type == 'host') {
+      reserves = await Reserve.findAll({
+        where: { host_id: req.params.id, canceled_at: null },
         order: [
           ['updatedAt', 'DESC'],
         ],
@@ -98,7 +125,6 @@ class ReserveController {
           },
         ],
       });
-
     }
 
     return res.json(reserves);
@@ -110,10 +136,7 @@ class ReserveController {
      */
     const schema = Yup.object().shape({
       space_id: Yup.number(),
-      event_id: Yup.number(),
-      service_id: Yup.number(),
       message: Yup.string(),
-      amount: Yup.number().required(),
     });
 
     try {
@@ -124,10 +147,8 @@ class ReserveController {
 
     let {
       space_id,
-      service_id,
       quantity,
       amount,
-      event_id,
       message,
       status,
       startDate,
@@ -135,7 +156,6 @@ class ReserveController {
     } = req.body;
 
     let space = {}
-    let service = {}
 
     // SPACE RESERVE ----
     if(space_id != null) {
@@ -153,29 +173,13 @@ class ReserveController {
       }
     }
 
-    // SERVICE RESERVE ----
-    if(service_id != null) {
-      service = await Service.findOne({ where: { id: service_id } });
-
-      if (!service) {
-        return res.status(422).json({ error: "Space not found" });
-      }
-
-      /**
-       * Check if service_id is the current user.
-       */
-      if (service.user_id === req.userId) {
-        return res.status(422).json({ error: "You can't create a schedule for yourself." });
-      }
-    }
-
     /**
      * Create reserve.
      */
     const {id: reserve_id} = await Reserve.create({
       space_id,
-      service_id,
-      event_id,
+      owner_id: space.owner_id,
+      organizer_id: req.userId,
       message,
       amount,
       quantity,
@@ -189,13 +193,11 @@ class ReserveController {
      * Notify appointment provider.
      */
     const notification = await Notification.create({
-      target_id:  space_id ?
-        space.owner_id
-        : service.user_id,
+      target_id: space.owner_id,
       sender_id: req.userId,
-      type: space_id ? 'newSpaceReserve' : 'newServiceReserve',
+      type: 'newSpaceReserve',
       type_id: reserve_id,
-      content: space_id ? space.name : service.name,
+      content: space.name,
     });
 
     const ownerSocket = req.connectedUsers[notification.target_id];
@@ -206,23 +208,22 @@ class ReserveController {
 
     // Create first message.
     if(message == null) {
-      message = `Nova solicitação de reserva`
+      message = `newReserveSolicitation`
     }
 
     const newMessage = await Message.create({
       message,
       room_id: reserve_id,
       sender_id: req.userId,
-      receiver_id: space_id ?
-        space.owner_id
-        : service.user_id,
+      receiver_id: space.owner_id,
     })
 
     return res.json({
       reserve_id,
       space_id,
-      service_id,
       event_id,
+      owner_id: space.owner_id,
+      organizer_id: req.userId,
       message,
       amount,
       quantity,

@@ -209,8 +209,15 @@ class PaymentController {
   }
 
     async info(req, res) {
-        console.log('okkkkkkkkkk');
-        console.log('REQ BODY', req.body);
+        switch (req.body.eventType) {
+            case 'DIGITAL_ACCOUNT_STATUS_CHANGED':
+                PaymentServices.updateAccountStatus(req.body.data[0], req);
+                break;
+        
+            default:
+                break;
+        }
+
         res.json(req.body)
     }
 }
