@@ -53,26 +53,21 @@ class AccountController {
 
   async store(req, res) {
       try {
-        const account = await Account.findAll({
+        
+        const account = await Account.findOne({
             where: {
                 user_id: req.userId,
                 default: true
-            },
-            limit: 1,
-            include: [
-                {
-                    model: BankAccount
-                },
-            ],
+            }
         })
 
         let newAccountBody = req.body;
 
-        if(!account.length) {
+        if(!account) {
           newAccountBody.default = true;
         }
 
-        const newAccount = await Account.create(req.body);
+        const newAccount = await Account.create(newAccountBody);
 
         return res.json(newAccount);
       } catch (error) {
