@@ -57,6 +57,7 @@ class SessionController {
       state,
       country,
       role,
+      monetary_unit,
     } = user;
 
     return res.json({
@@ -71,6 +72,7 @@ class SessionController {
         state,
         country,
         role,
+        monetary_unit,
       },
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
