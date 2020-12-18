@@ -1,10 +1,10 @@
+import Sequelize, { Model } from 'sequelize';
 import Event from '../models/Event';
 import Image from '../models/Image';
 import Ticket from '../models/Ticket';
 import User from '../models/User';
 import Reserve from '../models/Reserve';
 import UsersEvents from '../models/UsersEvents';
-import Sequelize, { Model } from 'sequelize';
 import db from '../../database'
 import * as Yup from 'yup';
 
