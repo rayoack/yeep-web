@@ -11,6 +11,7 @@ class Reserve extends Model {
       canceled_at: Sequelize.DATE,
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
+      service_id: Sequelize.INTEGER,
       quantity: Sequelize.INTEGER,
       status: Sequelize.STRING,
       type: Sequelize.STRING,
@@ -41,6 +42,7 @@ class Reserve extends Model {
   static associate(models) {
     this.belongsTo(models.Space, { foreignKey: 'space_id' });
     this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.Service, { foreignKey: 'service_id' });
   }
 }
 
