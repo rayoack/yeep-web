@@ -12,6 +12,11 @@ var _Message = require('../app/models/Message'); var _Message2 = _interopRequire
 var _UsersEvents = require('../app/models/UsersEvents'); var _UsersEvents2 = _interopRequireDefault(_UsersEvents);
 var _Service = require('../app/models/Service'); var _Service2 = _interopRequireDefault(_Service);
 var _Ticket = require('../app/models/Ticket'); var _Ticket2 = _interopRequireDefault(_Ticket);
+var _Notification = require('../app/models/Notification'); var _Notification2 = _interopRequireDefault(_Notification);
+var _JunoAccount = require('../app/models/JunoAccount'); var _JunoAccount2 = _interopRequireDefault(_JunoAccount);
+var _Account = require('../app/models/Account'); var _Account2 = _interopRequireDefault(_Account);
+var _BankAccount = require('../app/models/BankAccount'); var _BankAccount2 = _interopRequireDefault(_BankAccount);
+var _JunoToken = require('../app/models/JunoToken'); var _JunoToken2 = _interopRequireDefault(_JunoToken);
 
 const models = [
   _User2.default,
@@ -22,7 +27,12 @@ const models = [
   _UsersEvents2.default,
   _Message2.default,
   _Service2.default,
-  _Ticket2.default
+  _Ticket2.default,
+  _Notification2.default,
+  _Account2.default,
+  _JunoAccount2.default,
+  _BankAccount2.default,
+  _JunoToken2.default
 ];
 
 class Database {

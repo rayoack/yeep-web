@@ -30,6 +30,7 @@ class User extends _sequelize.Model {
 
   static associate(models) {
     this.hasMany(models.Space, { foreignKey: 'owner_id' });
+    this.hasMany(models.Space, { foreignKey: 'owner_id' });
     this.hasMany(models.Service, { foreignKey: 'provider_id' });
     this.belongsTo(models.Image, { foreignKey: 'avatar_id', as: 'avatar' });
     this.belongsToMany(models.Event, {

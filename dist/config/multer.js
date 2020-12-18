@@ -16,7 +16,7 @@ exports. default = {
 
   storage: _multers32.default.call(void 0, {
     s3: s3,
-    bucket: 'yeep-store',
+    bucket: process.env.AWS_S3_BUCKET ? process.env.AWS_S3_BUCKET : 'klub-store-dev',
     contentType: _multers32.default.AUTO_CONTENT_TYPE,
     metadata: function (req, file, cb) {
       cb(null, {fieldName: file.fieldname});

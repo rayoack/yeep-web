@@ -29,11 +29,13 @@ class UserController {
     /**
      * Checks if the user already exists.
      */
+
     const userExists = await _User2.default.findOne({ where: { email: req.body.email } });
 
     if (userExists) {
       return res.status(422).json({ error: 'User already exists.' });
     }
+
 
     /**
      * Create a new user.
@@ -62,8 +64,24 @@ class UserController {
       country,
       avatar_id,
       monetary_unit,
-      new_user
+      new_user,
     });
+  }
+
+  async show(req, res) {
+    const { id } = req.params
+
+    const user = await _User2.default.findByPk(req.params.id, {
+      include: [
+        {
+          model: _Image2.default,
+          as: 'avatar',
+          attributes: ['id', 'name', 'url'],
+        },
+      ],
+    })
+
+    return res.json(user)
   }
 
   async storeAvatar(req, res) {

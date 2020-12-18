@@ -47,7 +47,18 @@ class SessionController {
       return res.status(401).json({ error: 'Password does not match.' });
     }
 
-    const { id, name, avatar, provider, adress, city, state, country, role } = user;
+    const {
+      id,
+      name,
+      avatar,
+      provider,
+      adress,
+      city,
+      state,
+      country,
+      role,
+      monetary_unit,
+    } = user;
 
     return res.json({
       user: {
@@ -60,7 +71,8 @@ class SessionController {
         city,
         state,
         country,
-        role
+        role,
+        monetary_unit,
       },
       token: _jsonwebtoken2.default.sign({ id }, _auth2.default.secret, {
         expiresIn: _auth2.default.expiresIn,
