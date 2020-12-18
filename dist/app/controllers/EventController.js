@@ -1,4 +1,5 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _Event = require('../models/Event'); var _Event2 = _interopRequireDefault(_Event);
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Event = require('../models/Event'); var _Event2 = _interopRequireDefault(_Event);
 var _Image = require('../models/Image'); var _Image2 = _interopRequireDefault(_Image);
 var _Ticket = require('../models/Ticket'); var _Ticket2 = _interopRequireDefault(_Ticket);
 var _User = require('../models/User'); var _User2 = _interopRequireDefault(_User);
