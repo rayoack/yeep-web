@@ -1,6 +1,5 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var _Space = require('../models/Space'); var _Space2 = _interopRequireDefault(_Space);
 var _Image = require('../models/Image'); var _Image2 = _interopRequireDefault(_Image);
-var _User = require('../models/User'); var _User2 = _interopRequireDefault(_User);
 var _yup = require('yup'); var Yup = _interopRequireWildcard(_yup);
 var _sequelize = require('sequelize');
 
@@ -93,17 +92,6 @@ class SpaceController {
     const space = await _Space2.default.findByPk(req.params.id, {
       include: [
         {
-          model: _User2.default,
-          attributes: ['id', 'name',],
-          include: [
-            {
-              model: _Image2.default,
-              as: 'avatar',
-              attributes: ['id', 'name', 'url'],
-            },
-          ]
-        },
-        {
           model: _Image2.default,
           attributes: ['id', 'name', 'url'],
         },
@@ -164,11 +152,8 @@ class SpaceController {
       close_hour,
       has_parking,
       parking_features,
-      register_step,
       parking_description,
-      monetary_unit,
-      visible,
-     } = req.body;
+      monetary_unit } = req.body;
 
     const newSpace = await _Space2.default.create({
       name,
@@ -190,9 +175,7 @@ class SpaceController {
       has_parking,
       parking_features,
       parking_description,
-      visible,
-      register_step,
-      owner_id: req.userId,
+      owner_id: req.userId
     });
 
     return res.json(newSpace);

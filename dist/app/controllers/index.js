@@ -11,9 +11,6 @@ var _EventController = require('./EventController'); var _EventController2 = _in
 var _MessageController = require('./MessageController'); var _MessageController2 = _interopRequireDefault(_MessageController);
 var _ServiceController = require('./ServiceController'); var _ServiceController2 = _interopRequireDefault(_ServiceController);
 var _TicketController = require('./TicketController'); var _TicketController2 = _interopRequireDefault(_TicketController);
-var _PaymentController = require('./PaymentController'); var _PaymentController2 = _interopRequireDefault(_PaymentController);
-var _AccountController = require('./AccountController'); var _AccountController2 = _interopRequireDefault(_AccountController);
-var _BankAccountController = require('./BankAccountController'); var _BankAccountController2 = _interopRequireDefault(_BankAccountController);
 
 
 
@@ -29,7 +26,4 @@ var _BankAccountController = require('./BankAccountController'); var _BankAccoun
 
 
 
-
-
-
-exports.UserController = _UserController2.default; exports.SessionController = _SessionController2.default; exports.FileController = _FileController2.default; exports.ProviderController = _ProviderController2.default; exports.ReserveController = _ReserveController2.default; exports.ScheduleController = _ScheduleController2.default; exports.NotificationController = _NotificationController2.default; exports.AvailableController = _AvailableController2.default; exports.SpaceController = _SpaceController2.default; exports.EventController = _EventController2.default; exports.MessageController = _MessageController2.default; exports.ServiceController = _ServiceController2.default; exports.TicketController = _TicketController2.default; exports.PaymentController = _PaymentController2.default; exports.AccountController = _AccountController2.default; exports.BankAccountController = _BankAccountController2.default;
+exports.UserController = _UserController2.default; exports.SessionController = _SessionController2.default; exports.FileController = _FileController2.default; exports.ProviderController = _ProviderController2.default; exports.ReserveController = _ReserveController2.default; exports.ScheduleController = _ScheduleController2.default; exports.NotificationController = _NotificationController2.default; exports.AvailableController = _AvailableController2.default; exports.SpaceController = _SpaceController2.default; exports.EventController = _EventController2.default; exports.MessageController = _MessageController2.default; exports.ServiceController = _ServiceController2.default; exports.TicketController = _TicketController2.default;

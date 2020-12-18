@@ -5,7 +5,6 @@ var _Image = require('../models/Image'); var _Image2 = _interopRequireDefault(_I
 
 class ProviderController {
   async index(req, res) {
-
     const providers = await _User2.default.findAll({
       where: { provider: true },
       attributes: ['id', 'name', 'email', 'avatar_id'],
@@ -15,7 +14,7 @@ class ProviderController {
         attributes: ['name', 'path', 'url'],
       }],
     });
-   
+
     return res.json(providers);
   }
 }
