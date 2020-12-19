@@ -2,7 +2,7 @@
   "name": "yeep-web",
   "version": "1.0.0",
   "engines": {
-    "node": "12.x"
+    "node": "8.12.0"
   },
   "main": "index.js",
   "license": "MIT",
