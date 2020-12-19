@@ -6,7 +6,7 @@ import databaseConfig from '../config/database';
 import User from '../app/models/User';
 import Image from '../app/models/Image';
 import Reserve from '../app/models/Reserve';
-import Event from '../app/models/Event';
+import Event from '../app/models/event';
 import Space from '../app/models/Space';
 import Message from '../app/models/Message';
 import UsersEvents from '../app/models/UsersEvents';

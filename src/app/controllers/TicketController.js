@@ -1,4 +1,4 @@
-import Event from '../models/Event';
+import Event from '../models/event';
 import Image from '../models/Image';
 import User from '../models/User';
 import Ticket from '../models/Ticket';

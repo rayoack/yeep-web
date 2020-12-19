@@ -5,7 +5,7 @@ var _enUS = require('date-fns/locale/en-US'); var _enUS2 = _interopRequireDefaul
 
 var _Reserve = require('../models/Reserve'); var _Reserve2 = _interopRequireDefault(_Reserve);
 var _User = require('../models/User'); var _User2 = _interopRequireDefault(_User);
-var _Event = require('../models/Event'); var _Event2 = _interopRequireDefault(_Event);
+var _Event = require('../models/event'); var _Event2 = _interopRequireDefault(_Event);
 var _Image = require('../models/Image'); var _Image2 = _interopRequireDefault(_Image);
 var _Message = require('../models/Message'); var _Message2 = _interopRequireDefault(_Message);
 var _Space = require('../models/Space'); var _Space2 = _interopRequireDefault(_Space);

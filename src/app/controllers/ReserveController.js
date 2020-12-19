@@ -5,7 +5,7 @@ import enUS from 'date-fns/locale/en-US';
 
 import Reserve from '../models/Reserve';
 import User from '../models/User';
-import Event from '../models/Event';
+import Event from '../models/event';
 import Image from '../models/Image';
 import Message from '../models/Message';
 import Space from '../models/Space';

@@ -1,5 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
-import Event from '../models/Event';
+import Event from '../models/event';
 import Image from '../models/Image';
 import Ticket from '../models/Ticket';
 import User from '../models/User';

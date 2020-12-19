@@ -6,7 +6,7 @@ var _database = require('../config/database'); var _database2 = _interopRequireD
 var _User = require('../app/models/User'); var _User2 = _interopRequireDefault(_User);
 var _Image = require('../app/models/Image'); var _Image2 = _interopRequireDefault(_Image);
 var _Reserve = require('../app/models/Reserve'); var _Reserve2 = _interopRequireDefault(_Reserve);
-var _Event = require('../app/models/Event'); var _Event2 = _interopRequireDefault(_Event);
+var _Event = require('../app/models/event'); var _Event2 = _interopRequireDefault(_Event);
 var _Space = require('../app/models/Space'); var _Space2 = _interopRequireDefault(_Space);
 var _Message = require('../app/models/Message'); var _Message2 = _interopRequireDefault(_Message);
 var _UsersEvents = require('../app/models/UsersEvents'); var _UsersEvents2 = _interopRequireDefault(_UsersEvents);

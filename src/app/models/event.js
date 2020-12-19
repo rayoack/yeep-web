@@ -1,6 +1,7 @@
 'use strict';
 import Sequelize, { Model } from 'sequelize';
 
+
 class Event extends Model {
   static init(sequelize) {
     super.init({
