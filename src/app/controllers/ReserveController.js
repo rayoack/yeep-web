@@ -136,7 +136,6 @@ class ReserveController {
      */
     const schema = Yup.object().shape({
       space_id: Yup.number(),
-      message: Yup.string(),
     });
 
     try {
@@ -304,7 +303,7 @@ class ReserveController {
 
     if(!reserve) return res.status(404).json({ error: 'Reserve not found.' })
 
-    const isAdmin = reserve.Event.users.filter(user => user.id == req.userId)
+    const isAdmin = reserve.organizer_id === req.userId;
     if(!isAdmin) return res.status(401).json({ error: 'Not authorized.' })
 
     await reserve.update(req.body)
@@ -337,14 +336,14 @@ class ReserveController {
 
     if(!reserve) return res.status(404).json({ error: 'Reserve not found.' })
 
-    const isAdmin = reserve.Event.users.filter(user => user.id == req.userId)
+    const isAdmin = reserve.organizer_id === req.userId;
     if(!isAdmin) return res.status(401).json({ error: 'Not authorized.' })
 
-    const dateWithSub = subHours(reserve.date, 2);
+    // const dateWithSub = subHours(reserve.date, 2);
 
-    if (isBefore(dateWithSub, new Date())) {
-      return res.status(403).json({ error: 'You can only cancel reserve 2 hours in advance.' });
-    }
+    // if (isBefore(dateWithSub, new Date())) {
+    //   return res.status(403).json({ error: 'You can only cancel reserve 2 hours in advance.' });
+    // }
 
     reserve.canceled_at = new Date();
 
