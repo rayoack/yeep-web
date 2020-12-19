@@ -128,6 +128,7 @@ class EventController {
             'dates',
             'visible',
             'location_name',
+            'estimated_audience',
             'adress',
             'city',
             'country',
@@ -172,7 +173,8 @@ class EventController {
         adress,
         final_adress,
         image,
-        online: event.online
+        online: event.online,
+        estimated_audience: event.estimated_audience
       }
     })
 
