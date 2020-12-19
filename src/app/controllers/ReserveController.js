@@ -20,7 +20,7 @@ class ReserveController {
 
     if(req.query.request_type == 'space') {
       reserves = await Reserve.findAll({
-        where: { space_id: req.params.id, canceled_at: null },
+        where: { space_id: req.params.id },
         order: [
           ['updatedAt', 'DESC'],
         ],
@@ -45,7 +45,7 @@ class ReserveController {
     } else if (req.query.request_type == 'event') {
 
       reserves = await Reserve.findAll({
-        where: { event_id: req.params.id, canceled_at: null },
+        where: { event_id: req.params.id },
         order: [
           ['updatedAt', 'DESC'],
         ],
@@ -75,7 +75,7 @@ class ReserveController {
     } else if (req.query.request_type == 'organizer') {
 
       reserves = await Reserve.findAll({
-        where: { organizer_id: req.params.id, canceled_at: null },
+        where: { organizer_id: req.params.id },
         order: [
           ['updatedAt', 'DESC'],
         ],
@@ -103,7 +103,7 @@ class ReserveController {
       });
     } else if (req.query.request_type == 'host') {
       reserves = await Reserve.findAll({
-        where: { host_id: req.params.id, canceled_at: null },
+        where: { host_id: req.params.id },
         order: [
           ['updatedAt', 'DESC'],
         ],
@@ -150,8 +150,6 @@ class ReserveController {
       amount,
       message,
       status,
-      startDate,
-      endDate
     } = req.body;
 
     let space = {}
@@ -182,9 +180,7 @@ class ReserveController {
       message,
       amount,
       quantity,
-      status,
-      startDate,
-      endDate,
+      status,,
       ...req.body
     });
 
@@ -220,15 +216,12 @@ class ReserveController {
     return res.json({
       reserve_id,
       space_id,
-      event_id,
       owner_id: space.owner_id,
       organizer_id: req.userId,
       message,
       amount,
       quantity,
-      status,
-      startDate,
-      endDate,
+      status,,
       ...req.body
     });
   }
