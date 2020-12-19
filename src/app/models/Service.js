@@ -31,7 +31,6 @@ class Service extends Model {
     this.belongsTo(models.Space, { foreignKey: 'space_id' });
     this.belongsTo(models.Image, { foreignKey: 'logo_id', as: 'service_logo' });
     this.hasMany(models.Image, { foreignKey: 'service_id', as: 'service_images' });
-    this.hasMany(models.Reserve, { foreignKey: 'service_id' });
   }
 }
 
