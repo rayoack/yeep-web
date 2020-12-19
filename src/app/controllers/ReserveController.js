@@ -180,7 +180,7 @@ class ReserveController {
       message,
       amount,
       quantity,
-      status,,
+      status,
       ...req.body
     });
 
@@ -221,7 +221,7 @@ class ReserveController {
       message,
       amount,
       quantity,
-      status,,
+      status,
       ...req.body
     });
   }
