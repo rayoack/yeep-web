@@ -11,6 +11,8 @@ class Reserve extends Model {
       canceled_at: Sequelize.DATE,
       space_id: Sequelize.INTEGER,
       event_id: Sequelize.INTEGER,
+      host_id: Sequelize.INTEGER,
+      organizer_id: Sequelize.INTEGER,
       quantity: Sequelize.INTEGER,
       status: Sequelize.STRING,
       type: Sequelize.STRING,

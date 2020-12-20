@@ -175,7 +175,7 @@ class ReserveController {
      */
     const {id: reserve_id} = await Reserve.create({
       space_id,
-      owner_id: space.owner_id,
+      host_id: space.owner_id,
       organizer_id: req.userId,
       message,
       amount,
@@ -216,7 +216,7 @@ class ReserveController {
     return res.json({
       reserve_id,
       space_id,
-      owner_id: space.owner_id,
+      host_id: space.owner_id,
       organizer_id: req.userId,
       message,
       amount,
