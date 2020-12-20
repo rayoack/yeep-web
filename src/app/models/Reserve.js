@@ -17,6 +17,9 @@ class Reserve extends Model {
       additional_values: Sequelize.JSON,
       start_date: Sequelize.DATE,
       end_date: Sequelize.DATE,
+      dates: Sequelize.JSON,
+      event_title: Sequelize.STRING,
+      event_category: Sequelize.STRING,
       last_message_target_id: Sequelize.INTEGER,
       last_message_target_read: Sequelize.BOOLEAN,
       past: {
@@ -41,6 +44,8 @@ class Reserve extends Model {
   static associate(models) {
     this.belongsTo(models.Space, { foreignKey: 'space_id' });
     this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.User, { foreignKey: 'host_id', as: 'host' });
+    this.belongsTo(models.User, { foreignKey: 'organizer_id', as: 'organizer' });
   }
 }
 
