@@ -173,7 +173,7 @@ class ReserveController {
     /**
      * Create reserve.
      */
-    const {id: reserve_id} = await Reserve.create({
+    const newReserve = await Reserve.create({
       space_id,
       host_id: space.owner_id,
       organizer_id: req.userId,
@@ -191,7 +191,7 @@ class ReserveController {
       target_id: space.owner_id,
       sender_id: req.userId,
       type: 'newSpaceReserve',
-      type_id: reserve_id,
+      type_id: newReserve.id,
       content: space.name,
     });
 
@@ -208,13 +208,17 @@ class ReserveController {
 
     const newMessage = await Message.create({
       message,
-      room_id: reserve_id,
+      room_id: newReserve.id,
       sender_id: req.userId,
       receiver_id: space.owner_id,
     })
 
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('newReserve', newReserve);
+    }
+
     return res.json({
-      reserve_id,
+      reserve_id: newReserve,
       space_id,
       host_id: space.owner_id,
       organizer_id: req.userId,
