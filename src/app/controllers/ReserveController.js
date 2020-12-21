@@ -18,7 +18,7 @@ class ReserveController {
     const { page } = req.params;
     let reserves = []
 
-    if(req.query.request_type == 'space') {
+    if(req.query.request_type === 'space') {
       reserves = await Reserve.findAll({
         where: { space_id: req.params.id },
         order: [
@@ -42,7 +42,7 @@ class ReserveController {
           },
         ],
       });
-    } else if (req.query.request_type == 'event') {
+    } else if (req.query.request_type === 'event') {
 
       reserves = await Reserve.findAll({
         where: { event_id: req.params.id },
@@ -72,8 +72,8 @@ class ReserveController {
         ],
       });
 
-    } else if (req.query.request_type == 'organizer') {
-
+    } else if (req.query.request_type ==='organizer') {
+      console.log('okkk')
       reserves = await Reserve.findAll({
         where: { organizer_id: req.params.id },
         order: [
@@ -99,9 +99,19 @@ class ReserveController {
               attributes: ['id', 'name', 'url'],
             },
           },
+          {
+            model: User,
+            as: 'host',
+            attributes: ['id', 'name'],
+            include: {
+              model: Image,
+              as: 'avatar',
+              attributes: ['id', 'name', 'url'],
+            },
+          },
         ],
       });
-    } else if (req.query.request_type == 'host') {
+    } else if (req.query.request_type === 'host') {
       reserves = await Reserve.findAll({
         where: { host_id: req.params.id },
         order: [
@@ -120,6 +130,16 @@ class ReserveController {
             include: {
               model: Image,
               as: 'event_logo',
+              attributes: ['id', 'name', 'url'],
+            },
+          },
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['id', 'name'],
+            include: {
+              model: Image,
+              as: 'avatar',
               attributes: ['id', 'name', 'url'],
             },
           },
