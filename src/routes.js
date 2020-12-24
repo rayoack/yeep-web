@@ -20,7 +20,8 @@ import {
   TicketController,
   PaymentController,
   AccountController,
-  BankAccountController
+  BankAccountController,
+  ChatRoomController
 } from './app/controllers/';
 
 const routes = new Router();
@@ -121,5 +122,8 @@ routes.get('/bank-accounts/:id', BankAccountController.show);
 routes.post('/bank-accounts', BankAccountController.store);
 routes.put('/bank-accounts/:id', BankAccountController.update);
 routes.delete('/bank-accounts/:id', BankAccountController.delete);
+
+// CHAT ROOMS
+routes.get('/room/:id/:page', ChatRoomController.index);
 
 export default routes;

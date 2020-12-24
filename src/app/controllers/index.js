@@ -14,6 +14,7 @@ import TicketController from './TicketController';
 import PaymentController from './PaymentController';
 import AccountController from './AccountController';
 import BankAccountController from './BankAccountController';
+import ChatRoomController from './ChatRoomController';
 
 export {
   UserController,
@@ -31,5 +32,6 @@ export {
   TicketController,
   PaymentController,
   AccountController,
-  BankAccountController
+  BankAccountController,
+  ChatRoomController
 }

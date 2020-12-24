@@ -17,6 +17,7 @@ import JunoAccount from '../app/models/JunoAccount';
 import Account from '../app/models/Account';
 import BankAccount from '../app/models/BankAccount';
 import JunoToken from '../app/models/JunoToken';
+import ChatRoom from '../app/models/ChatRoom';
 
 const models = [
   User,
@@ -32,13 +33,14 @@ const models = [
   Account,
   JunoAccount,
   BankAccount,
-  JunoToken
+  JunoToken,
+  ChatRoom
 ];
 
 class Database {
   constructor() {
     this.init();
-    // this.mongo();
+    this.mongo();
   }
 
   init() {
@@ -49,12 +51,12 @@ class Database {
       .map(model => model.associate && model.associate(this.connection.models));
   }
 
-  // mongo() {
-  //   this.mongoConnection = mongoose.connect(
-  //     process.env.MONGO_URL,
-  //     { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true },
-  //   );
-  // }
+  mongo() {
+    this.mongoConnection = mongoose.connect(
+      process.env.MONGO_URL,
+      { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true },
+    );
+  }
 }
 
 export default new Database();

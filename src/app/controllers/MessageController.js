@@ -1,46 +1,16 @@
-import Space from '../models/Space';
+import ChatRoom from '../models/ChatRoom';
 import User from '../models/User';
 import Image from '../models/Image';
-import Message from '../models/Message';
+import Message from '../schemas/Message';
 import Reserve from '../models/Reserve';
 import * as Yup from 'yup';
 
 class MessageController {
   async index(req, res) {
-    const messages = await Message.findAll({
-      where: {
-        room_id: req.params.id,
-      },
-      order: [
-        ['id', 'DESC']
-      ],
-      include: [
-        {
-          model: User,
-          as: 'sender',
-          attributes: ['id', 'name'],
-          include: {
-            model: Image,
-            as: 'avatar',
-            attributes: ['id', 'name', 'url'],
-          },
-        },
-        {
-          model: User,
-          as: 'receiver',
-          attributes: ['id', 'name'],
-          include: {
-            model: Image,
-            as: 'avatar',
-            attributes: ['id', 'name', 'url'],
-          },
-        },
-        {
-          model: Image,
-          attributes: ['id', 'name', 'url'],
-        },
-      ]
+    const messages = await Message.find({
+      room_id: req.params.id,
     })
+    .sort({ createdAt: 'desc' })
 
     return res.json(messages)
   }
@@ -50,31 +20,19 @@ class MessageController {
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      message: Yup.string().required(),
-      room_id: Yup.number().required(),
-      sender_id: Yup.number().required(),
-      receiver_id: Yup.number(),
-    });
-
-    try {
-      await schema.validate(req.body);
-    } catch (err) {
-      return res.status(422).json({ error: `Validation fails: ${ err.message }` });
-    }
 
     const newMessage = await Message.create(req.body)
 
-    req.io.to(`reserve${newMessage.room_id}`).emit('message', newMessage);
+    req.io.to(newMessage.room_name).emit('message', newMessage);
 
-    req.io.of('/').in(`reserve${newMessage.room_id}`).clients(async (error, clients) => {
+    req.io.of('/').in(newMessage.room_name).clients(async (error, clients) => {
 
       if (error) throw error;
 
       if (!clients.includes(req.connectedUsers[newMessage.receiver_id])) {
-        const reserve = await Reserve.findByPk(newMessage.room_id);
+        const chatRoom = await ChatRoom.findByPk(newMessage.room_id);
 
-        await reserve.update({
+        await chatRoom.update({
           last_message_target_id: newMessage.receiver_id,
           last_message_target_read: false
         })
@@ -82,7 +40,7 @@ class MessageController {
         const ownerSocket = req.connectedUsers[newMessage.receiver_id];
 
         if (ownerSocket) {
-          req.io.to(ownerSocket).emit('newMessageToRoom', reserve);
+          req.io.to(ownerSocket).emit('newMessageToRoom', chatRoom);
         }
       }
 
@@ -92,19 +50,6 @@ class MessageController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      adress: Yup.string(),
-      city: Yup.string(),
-      state: Yup.string(),
-      country: Yup.string(),
-      description: Yup.string(),
-      category: Yup.string(),
-      price: Yup.number(),
-      charge_type: Yup.string(),
-      capacity: Yup.number(),
-    });
-
     res.json()
   }
 

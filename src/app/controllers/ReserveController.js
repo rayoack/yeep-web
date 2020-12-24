@@ -7,7 +7,8 @@ import Reserve from '../models/Reserve';
 import User from '../models/User';
 import Event from '../models/event';
 import Image from '../models/Image';
-import Message from '../models/Message';
+import ChatRoom from '../models/ChatRoom';
+import Message from '../schemas/Message';
 import Space from '../models/Space';
 import Service from '../models/Service';
 import Notification from '../models/Notification';
@@ -73,7 +74,6 @@ class ReserveController {
       });
 
     } else if (req.query.request_type ==='organizer') {
-      console.log('okkk')
       reserves = await Reserve.findAll({
         where: { organizer_id: req.params.id },
         order: [
@@ -204,8 +204,37 @@ class ReserveController {
       ...req.body
     });
 
+    const ownerSocket = req.connectedUsers[space.owner_id];
+
+    // Create Room
+    const newChatRoom = await ChatRoom.create({
+      host_id: space.owner_id,
+      organizer_id: req.userId,
+      room_name: `reserve${newReserve.id}`,
+      reserve_id: newReserve.id,
+      last_message_target_id: space.owner_id,
+      type: 'space_reserve',
+    });
+
+    // Create first message.
+    if(message == null) {
+      message = `newReserveSolicitation`
+    }
+
+    const newMessage = await Message.create({
+      message,
+      room_name: newChatRoom.room_name,
+      room_id: newChatRoom.id,
+      sender_id: req.userId,
+      receiver_id: space.owner_id,
+    })
+
+    if (ownerSocket) {
+      req.io.to(ownerSocket).emit('newReserve', newReserve);
+    }
+
     /**
-     * Notify appointment provider.
+     * Notify host
      */
     const notification = await Notification.create({
       target_id: space.owner_id,
@@ -215,26 +244,8 @@ class ReserveController {
       content: space.name,
     });
 
-    const ownerSocket = req.connectedUsers[notification.target_id];
-
     if (ownerSocket) {
       req.io.to(ownerSocket).emit('notification', notification);
-    }
-
-    // Create first message.
-    if(message == null) {
-      message = `newReserveSolicitation`
-    }
-
-    const newMessage = await Message.create({
-      message,
-      room_id: newReserve.id,
-      sender_id: req.userId,
-      receiver_id: space.owner_id,
-    })
-
-    if (ownerSocket) {
-      req.io.to(ownerSocket).emit('newReserve', newReserve);
     }
 
     return res.json({
