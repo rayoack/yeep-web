@@ -151,6 +151,7 @@ class ReserveController {
   }
 
   async store(req, res) {
+    console.log('CREATING NEW RESERVE')
     /**
      * Validate user input data.
      */
@@ -217,7 +218,7 @@ class ReserveController {
     });
 
     // Create first message.
-    if(message == null) {
+    if(!message) {
       message = `newReserveSolicitation`
     }
 
@@ -248,17 +249,7 @@ class ReserveController {
       req.io.to(ownerSocket).emit('notification', notification);
     }
 
-    return res.json({
-      reserve_id: newReserve,
-      space_id,
-      host_id: space.owner_id,
-      organizer_id: req.userId,
-      message,
-      amount,
-      quantity,
-      status,
-      ...req.body
-    });
+    return res.json(newReserve);
   }
 
   async show(req, res) {
