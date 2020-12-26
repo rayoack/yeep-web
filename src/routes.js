@@ -125,5 +125,6 @@ routes.delete('/bank-accounts/:id', BankAccountController.delete);
 
 // CHAT ROOMS
 routes.get('/room/:id/:page', ChatRoomController.index);
+routes.put('/room/:id', ChatRoomController.update);
 
 export default routes;

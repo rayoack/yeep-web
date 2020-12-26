@@ -80,6 +80,16 @@ class ChatRoomController {
     return res.json(rooms);
   }
 
+  async update(req, res) {
+    const room = await ChatRoom.findByPk(req.params.id);
+
+    if(!room) return res.status(404).json({ error: 'Chat room not found.' })
+
+    await room.update(req.body)
+
+    return res.json(room);
+  }
+
   async show(req, res) {
     return res.json();
   }
