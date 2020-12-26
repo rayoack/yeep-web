@@ -7,7 +7,6 @@ import * as Yup from 'yup';
 
 class MessageController {
   async index(req, res) {
-    console.log('MESSAGES MODEL', Message)
 
     const messages = await Message.find({
       room_id: req.params.id,
