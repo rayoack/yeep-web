@@ -283,7 +283,11 @@ class ReserveController {
               'category',
               'price',
               'charge_type',
-              'monetary_unit'
+              'monetary_unit',
+              'adress',
+              'city',
+              'state',
+              'country',
             ],
             include: [
               {
