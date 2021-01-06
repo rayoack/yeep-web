@@ -290,6 +290,26 @@ class ReserveController {
             },
           ],
         },
+        {
+          model: User,
+          as: 'host',
+          attributes: ['id', 'name'],
+          include: {
+            model: Image,
+            as: 'avatar',
+            attributes: ['id', 'name', 'url'],
+          },
+        },
+        {
+          model: User,
+          as: 'organizer',
+          attributes: ['id', 'name'],
+          include: {
+            model: Image,
+            as: 'avatar',
+            attributes: ['id', 'name', 'url'],
+          },
+        },
       ],
     });
 
