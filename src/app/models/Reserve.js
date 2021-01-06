@@ -46,7 +46,6 @@ class Reserve extends Model {
   static associate(models) {
     this.belongsTo(models.Space, { foreignKey: 'space_id' });
     this.belongsTo(models.Event, { foreignKey: 'event_id' });
-    this.belongsTo(models.ChatRoom, { foreignKey: 'reserve_id' });
     this.belongsTo(models.User, { foreignKey: 'host_id', as: 'host' });
     this.belongsTo(models.User, { foreignKey: 'organizer_id', as: 'organizer' });
   }

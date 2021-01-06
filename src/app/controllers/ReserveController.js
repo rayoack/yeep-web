@@ -253,68 +253,74 @@ class ReserveController {
   }
 
   async show(req, res) {
-    const reserve = await Reserve.findByPk(req.params.id, {
-      include: [
-        {
-          model: Event,
-          attributes: ['id', 'title', 'category', 'description', 'dates'],
-          include: [
-            {
+
+    try {
+      const reserve = await Reserve.findByPk(req.params.id, {
+        include: [
+          {
+            model: Event,
+            attributes: ['id', 'title', 'category', 'description', 'dates'],
+            include: [
+              {
+                model: Image,
+                as: 'event_logo',
+                attributes: ['id', 'name', 'url'],
+              },
+              {
+                model: User,
+                as: 'users',
+                attributes: ['id', 'name'],
+                through: { attributes: [] },
+              },
+            ],
+          },
+          {
+            model: Space,
+            attributes: [
+              'id',
+              'name',
+              'description',
+              'category',
+              'price',
+              'charge_type',
+              'monetary_unit'
+            ],
+            include: [
+              {
+                model: Image,
+                attributes: ['id', 'name', 'url'],
+              },
+            ],
+          },
+          {
+            model: User,
+            as: 'host',
+            attributes: ['id', 'name'],
+            include: {
               model: Image,
-              as: 'event_logo',
+              as: 'avatar',
               attributes: ['id', 'name', 'url'],
             },
-            {
-              model: User,
-              as: 'users',
-              attributes: ['id', 'name'],
-              through: { attributes: [] },
-            },
-          ],
-        },
-        {
-          model: Space,
-          attributes: [
-            'id',
-            'name',
-            'description',
-            'category',
-            'price',
-            'charge_type',
-            'monetary_unit'
-          ],
-          include: [
-            {
+          },
+          {
+            model: User,
+            as: 'organizer',
+            attributes: ['id', 'name'],
+            include: {
               model: Image,
+              as: 'avatar',
               attributes: ['id', 'name', 'url'],
             },
-          ],
-        },
-        {
-          model: User,
-          as: 'host',
-          attributes: ['id', 'name'],
-          include: {
-            model: Image,
-            as: 'avatar',
-            attributes: ['id', 'name', 'url'],
           },
-        },
-        {
-          model: User,
-          as: 'organizer',
-          attributes: ['id', 'name'],
-          include: {
-            model: Image,
-            as: 'avatar',
-            attributes: ['id', 'name', 'url'],
-          },
-        },
-      ],
-    });
+        ],
+      });
+  
+      return res.json(reserve)
 
+    } catch (error) {
+      return res.json(error)
+    }
 
-    return res.json(reserve)
   }
 
   async update(req, res) {
