@@ -288,6 +288,7 @@ class ReserveController {
               'city',
               'state',
               'country',
+              'days_before_cancellation'
             ],
             include: [
               {

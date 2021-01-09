@@ -25,6 +25,7 @@ class Space extends Model {
       owner_id: Sequelize.INTEGER,
       visible: Sequelize.BOOLEAN,
       register_step: Sequelize.INTEGER,
+      days_before_cancellation: Sequelize.INTEGER,
     }, {
       sequelize,
     });

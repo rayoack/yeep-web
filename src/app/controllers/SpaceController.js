@@ -168,6 +168,7 @@ class SpaceController {
       parking_description,
       monetary_unit,
       visible,
+      days_before_cancellation
      } = req.body;
 
     const newSpace = await Space.create({
@@ -193,6 +194,7 @@ class SpaceController {
       visible,
       register_step,
       owner_id: req.userId,
+      days_before_cancellation
     });
 
     return res.json(newSpace);
