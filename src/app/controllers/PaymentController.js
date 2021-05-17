@@ -3,6 +3,7 @@ import JunoAccount from '../models/JunoAccount';
 import Account from '../models/Account';
 import BankAccount from '../models/BankAccount';
 import { PaymentServices } from '../services'
+import addDays from 'date-fns/addDays'
 import Image from '../models/Image';
 import qs from 'qs';
 import axios from 'axios';
@@ -219,6 +220,99 @@ class PaymentController {
         }
 
         res.json(req.body)
+    }
+    
+    // Reserves
+    async createChargeForReserve(req, res) {
+        const reserve = req.body.reserve
+
+        if(!reserve || !reserve.id || !reserve.amount || !reserve.host.id) res.status(400).json({ error: 'missing information' })
+
+        // Getting the host account
+        const hostAccount = await Account.findOne({
+            where: {
+                user_id: reserve.host.id,
+                default: true
+            },
+            include: [
+                {
+                    model: JunoAccount
+                }
+            ]
+        })
+
+        if(!hostAccount && !hostAccount.JunoAccount) return res.json({ 
+            error: 'Não foi encontrada a conta digital para o anfitrião',
+            type: 'DigitalAccountNotFound'
+        })
+
+        // Getting the organizer document
+        const organizerData = await User.findOne({
+            where: {
+                user_id: reserve.organizer.id
+            },
+            attributes: ['id', 'name', 'document', 'email']
+        })
+
+        // Calculation of the fee paid by the organizer and the total amount to be paid
+        const bookingFeeValue = parseFloat(reserve.amount * 0.03)
+        const bookingAmountMoreFeeTax = (parseFloat(reserve.amount) + bookingFeeValue).toFixed(2)
+
+        // Division of values ​​between klub and host
+        const klubAmount = ((parseFloat(reserve.amount) * 0.15) + bookingFeeValue).toFixed(2)
+        const hostAmount = (parseFloat(reserve.amount) - klubAmount).toFixed(2)
+
+        const chargeBody = {
+            charge: {
+                description: `Reserva do espaço ${reserve.Space.name}`,
+                amount: bookingAmountMoreFeeTax,
+                dueDate: addDays(new Date(), 30),
+                maxOverdueDays: 0,
+                fine: 0,
+                interest: "0.00",
+                discountAmount: "0.00",
+                paymentTypes: [
+                    "BOLETO",
+                    "CREDIT_CARD"
+                ],
+                paymentAdvance: true,
+                split: [
+                    {
+                        recipientToken: hostAccount.JunoAccount.resource_token,
+                        amount: hostAmount,
+                        amountRemainder: true,
+                        chargeFee: false
+                    },
+                    {
+                        recipientToken: process.env.JUNO_PRIVATE_TOKEN,
+                        amount: klubAmount,
+                        amountRemainder: false,
+                        chargeFee: true
+                    }
+                ]
+            },
+            billing: {
+                name: organizerData.name,
+                document: organizerData.document,
+                email: organizerData.email,
+                notify: true
+            }
+        }
+
+        let junoAccessToken = await PaymentServices.getAccessToken();
+
+        let config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${junoAccessToken}`,
+                'X-Api-Version': 2,
+                'X-Resource-Token': process.env.JUNO_PRIVATE_TOKEN
+            }
+        }
+        
+        const response = await axios.post(`${junoUrlBase}/charges`, chargeBody, config)
+        
+        res.json(response)
     }
 }
 

@@ -110,6 +110,9 @@ routes.post('/payments/digital-account', PaymentController.createDigitalAccount)
 routes.get('/payments/check-balance', PaymentController.checkBalance);
 routes.get('/payments/check-documents/:id', PaymentController.checkDocuments);
 
+// CHARGES
+routes.post('/charges/reserve', PaymentController.createChargeForReserve);
+
 // ACCOUNTS
 routes.get('/accounts', AccountController.index);
 routes.get('/accounts/:id', AccountController.show);
